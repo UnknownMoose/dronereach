@@ -8,7 +8,7 @@ const services = [
   ['Solar panel cleaning', '/services/solar-panel-cleaning'],
   ['Render cleaning', '/services/render-cleaning'],
   ['Signage cleaning', '/services/signage-cleaning'],
-  ['Residential exterior cleaning', '/services/residential-exterior-cleaning'],
+  ['Residential cleaning', '/services/residential-exterior-cleaning'],
 ];
 
 async function loadImages(page) {
@@ -70,6 +70,54 @@ for (const width of [390, 768, 1024, 1440]) {
     expect(grid.gap).toBeGreaterThanOrEqual(width < 600 ? 16 : 20);
     expect(grid.gap).toBeLessThanOrEqual(24);
 
+    const benefitLayout = await page.locator('.benefits-section').evaluate(section => {
+      const grid = section.querySelector('.benefits');
+      const style = getComputedStyle(section);
+      const rect = section.getBoundingClientRect();
+      return {
+        left: rect.left,
+        width: rect.width,
+        columns: getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+        top: parseFloat(style.paddingTop),
+        bottom: parseFloat(style.paddingBottom),
+        items: Array.from(grid.children, item => {
+          const icon = item.querySelector('.benefit-icon').getBoundingClientRect();
+          const heading = item.querySelector('h2');
+          const paragraph = item.querySelector('p');
+          const itemStyle = getComputedStyle(item);
+          const paragraphStyle = getComputedStyle(paragraph);
+          return {
+            iconWidth: icon.width,
+            iconHeight: icon.height,
+            headingSize: parseFloat(getComputedStyle(heading).fontSize),
+            paragraphSize: parseFloat(paragraphStyle.fontSize),
+            paragraphLineHeight: parseFloat(paragraphStyle.lineHeight),
+            fits: heading.scrollWidth <= heading.clientWidth && heading.scrollHeight <= heading.clientHeight && paragraph.scrollWidth <= paragraph.clientWidth && paragraph.scrollHeight <= paragraph.clientHeight,
+            shadow: itemStyle.boxShadow,
+            borderWidth: parseFloat(itemStyle.borderTopWidth),
+            background: itemStyle.backgroundColor,
+          };
+        }),
+      };
+    });
+    expect(benefitLayout.left).toBe(0);
+    expect(benefitLayout.width).toBe(width);
+    expect(benefitLayout.columns).toBe(width >= 1200 ? 4 : width < 600 ? 1 : 2);
+    expect(benefitLayout.top).toBe(width < 600 ? 48 : 72);
+    expect(benefitLayout.bottom).toBe(width < 600 ? 48 : 72);
+    expect(benefitLayout.items).toHaveLength(4);
+    for (const item of benefitLayout.items) {
+      expect(item.iconWidth).toBe(52);
+      expect(item.iconHeight).toBe(52);
+      expect(item.headingSize).toBe(24);
+      expect(item.paragraphSize).toBe(16);
+      expect(item.paragraphLineHeight).toBeCloseTo(26.4, 1);
+      expect(item.fits).toBe(true);
+      expect(item.shadow).toBe('none');
+      expect(item.borderWidth).toBe(0);
+      expect(item.background).toBe('rgba(0, 0, 0, 0)');
+    }
+
     for (const tile of await page.locator('.service-tile').all()) {
       const bounds = await tile.evaluate(element => {
         const card = element.getBoundingClientRect();
@@ -81,6 +129,35 @@ for (const width of [390, 768, 1024, 1440]) {
       if (width >= 1200) expect(bounds.width / bounds.height).toBeCloseTo(1, 1);
       if (width < 600) expect(bounds.width).toBeGreaterThan(bounds.height);
     }
+
+    const circles = await page.locator('.step-number').evaluateAll(elements => elements.map(element => {
+      const style = getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      return { background: style.backgroundColor, color: style.color, width: rect.width, height: rect.height };
+    }));
+    expect(circles).toHaveLength(3);
+    for (const circle of circles) {
+      expect(circle.background).toBe('rgb(43, 159, 214)');
+      expect(circle.color).toBe('rgb(19, 41, 74)');
+      expect(circle.width).toBe(width < 600 ? 44 : 48);
+      expect(circle.height).toBe(circle.width);
+    }
+    const supportingText = await page.locator('.benefits p, footer p, footer a').evaluateAll(elements => elements.map(element => ({
+      text: element.textContent.trim(),
+      fontSize: parseFloat(getComputedStyle(element).fontSize),
+      fits: element.scrollWidth <= element.clientWidth,
+    })));
+    for (const item of supportingText) {
+      expect(item.fontSize, item.text).toBeGreaterThanOrEqual(14);
+      expect(item.fits, item.text).toBe(true);
+    }
+    const audience = await page.locator('.audience').evaluate(element => {
+      const style = getComputedStyle(element);
+      return { top: parseFloat(style.paddingTop), bottom: parseFloat(style.paddingBottom), linkSizes: Array.from(element.querySelectorAll('.audience-links a'), link => parseFloat(getComputedStyle(link).fontSize)) };
+    });
+    expect(audience.top).toBe(width < 600 ? 42 : 56);
+    expect(audience.bottom).toBe(width < 600 ? 20 : 36);
+    expect(audience.linkSizes).toEqual([17, 17, 17]);
 
     const headlineWord = page.locator('.no-break');
     expect(await headlineWord.evaluate(element => {
@@ -118,6 +195,29 @@ test('all eight photographic service cards are single links with the requested d
   }
   expect(new Set(imageSources).size).toBe(8);
   await expect(page.locator('body')).not.toContainText(/gutter cleaning/i);
+});
+
+test('four drone-cleaning benefits form a separate semantic section between the hero and services', async ({ page }) => {
+  await page.goto('/');
+  const section = page.getByRole('region', { name: 'Benefits of drone cleaning' });
+  await expect(section).toBeVisible();
+  await expect(section.getByRole('heading', { level: 2 })).toHaveText(['Safer', 'Faster', 'Cost-effective', 'Precision cleaning']);
+  await expect(section.locator('.benefits > li p')).toHaveText([
+    'Keep cleaning crews on the ground. Drone cleaning reduces the need to work at height, helping limit exposure to the risks associated with ladders, scaffolding and access platforms.',
+    'Up to 5 times faster than conventional cleaning methods on suitable jobs. Less time setting up and repositioning access equipment means more time cleaning and less disruption to your site.',
+    'On suitable jobs, drone access can remove the need to hire mobile access platforms or erect scaffolding. Less setup and fewer access requirements can help lower costs and minimise disruption.',
+    'Bring the clean directly to hard-to-reach surfaces. A controlled, targeted approach allows the cleaning method to be matched to the material and condition of each area.',
+  ]);
+  await expect(section.locator('.benefits > li')).toHaveCount(4);
+  await expect(section.locator('.benefit-icon > svg')).toHaveCount(4);
+  for (const icon of await section.locator('.benefit-icon').all()) await expect(icon).toHaveAttribute('aria-hidden', 'true');
+  await expect(page.locator('.hero .benefits')).toHaveCount(0);
+  await expect(section.locator('.contour-art')).toHaveCount(0);
+  expect(await section.evaluate(element => {
+    const hero = document.querySelector('.hero-band');
+    const services = document.querySelector('.services');
+    return Boolean(hero.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING) && Boolean(element.compareDocumentPosition(services) & Node.DOCUMENT_POSITION_FOLLOWING);
+  })).toBe(true);
 });
 
 test('navigation, sectors, project and legal links use real page URLs', async ({ page }) => {
@@ -173,7 +273,7 @@ test('hover and keyboard focus brighten photos while titles and their bottom gra
   const tile = page.locator('.service-tile').first();
   await tile.scrollIntoViewIfNeeded();
   const initial = await tileAppearance(tile);
-  expect(initial.overlayOpacity).toBeGreaterThanOrEqual(0.35);
+  expect(initial.overlayOpacity).toBeCloseTo(0.22, 2);
   expect(initial.scale).toBe(1);
   expect(initial.titleColor).toBe('rgb(255, 255, 255)');
   expect(initial.bottomGradient).toContain('linear-gradient');
@@ -226,7 +326,7 @@ test('touch cards retain their readable overlay and navigate with a single tap',
     expect(await page.evaluate(() => matchMedia('(hover: none)').matches)).toBe(true);
     const tile = page.locator('.service-tile').last();
     await tile.scrollIntoViewIfNeeded();
-    expect((await tileAppearance(tile)).overlayOpacity).toBeGreaterThanOrEqual(0.35);
+    expect((await tileAppearance(tile)).overlayOpacity).toBeCloseTo(0.22, 2);
     await expectNavigationRequest(page, '/services/residential-exterior-cleaning', () => tile.tap());
   } finally {
     await context.close();

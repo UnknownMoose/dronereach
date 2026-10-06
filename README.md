@@ -32,6 +32,10 @@ All current imagery is temporary AI-generated architectural concept imagery, not
 
 Replace concept imagery and SVG logo with approved business assets when available. Supply real contact information and approved legal copy. Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` for a launch build until a genuine approved review is available.
 
+## Pre-launch content check
+
+Substantiate the supplied “Up to 5 times faster than conventional cleaning methods on suitable jobs” claim before launch. The benefits section uses the supplied marketing copy without adding supporting statistics, citations or comparisons.
+
 ## Linked pages still to build
 
 Only `/` is implemented. The following links intentionally point to future pages:
