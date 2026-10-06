@@ -259,3 +259,66 @@ test('skip link stays hidden until focused and transfers focus to main', async (
   await page.keyboard.press('Enter');
   await expect(page.locator('main')).toBeFocused();
 });
+
+test('brand colours and pale backgrounds use the exact navy and blue palette', async ({ page }) => {
+  await page.goto('/');
+  const palette = await page.evaluate(() => {
+    const root = getComputedStyle(document.documentElement);
+    const context = document.createElement('canvas').getContext('2d');
+    const colour = (selector, property, pseudo) => {
+      context.clearRect(0, 0, 1, 1);
+      context.fillStyle = getComputedStyle(document.querySelector(selector), pseudo)[property];
+      context.fillRect(0, 0, 1, 1);
+      return Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3);
+    };
+    return {
+      navyToken: root.getPropertyValue('--navy').trim().toLowerCase(),
+      blueToken: root.getPropertyValue('--brand-blue').trim().toLowerCase(),
+      heading: colour('h1', 'color'),
+      sectionHeading: colour('.services h2', 'color'),
+      darkButton: colour('.button.navy', 'backgroundColor'),
+      blueButton: colour('.button.cyan', 'backgroundColor'),
+      blueButtonText: colour('.button.cyan', 'color'),
+      headlineAccent: colour('h1 > span', 'color'),
+      benefitIcon: colour('.benefit-icon', 'color'),
+      cardOverlay: colour('.service-tile', 'backgroundColor', '::before'),
+      subtleBackground: colour('footer', 'backgroundColor'),
+      processBackground: colour('.process', 'backgroundColor'),
+      reviewBackground: colour('.feedback', 'backgroundColor'),
+    };
+  });
+  expect(palette.navyToken).toBe('#13294a');
+  expect(palette.blueToken).toBe('#2b9fd6');
+  for (const name of ['heading', 'sectionHeading', 'darkButton', 'blueButtonText', 'cardOverlay']) expect(palette[name], name).toEqual([19, 41, 74]);
+  for (const name of ['blueButton', 'headlineAccent', 'benefitIcon']) expect(palette[name], name).toEqual([43, 159, 214]);
+  // Expected rendered sRGB mixes of the brand blue with white at 10% and 18%.
+  expect(palette.subtleBackground).toEqual([234, 245, 251]);
+  expect(palette.processBackground).toEqual([217, 238, 248]);
+  expect(palette.reviewBackground).toEqual([217, 238, 248]);
+});
+
+test('contour artwork stays decorative and clipped to the hero and process sections', async ({ page }) => {
+  await page.goto('/');
+  const contours = page.locator('.contour-art');
+  await expect(contours).toHaveCount(2);
+  for (const contour of await contours.all()) {
+    await expect(contour).toHaveAttribute('aria-hidden', 'true');
+    const decoration = await contour.evaluate(element => {
+      const style = getComputedStyle(element);
+      return {
+        intendedSection: element.parentElement.matches('.hero-band, .process'),
+        pointerEvents: style.pointerEvents,
+        sectionOverflow: getComputedStyle(element.parentElement).overflow,
+        mask: style.maskImage,
+        repeat: style.maskRepeat,
+        interactiveDescendants: element.querySelectorAll('a, button, input, [tabindex]').length,
+      };
+    });
+    expect(decoration.intendedSection).toBe(true);
+    expect(decoration.pointerEvents).toBe('none');
+    expect(['hidden', 'clip']).toContain(decoration.sectionOverflow);
+    expect(decoration.mask).toContain('/patterns/contours.svg');
+    expect(decoration.repeat.split(',').every(value => value.trim() === 'no-repeat')).toBe(true);
+    expect(decoration.interactiveDescendants).toBe(0);
+  }
+});

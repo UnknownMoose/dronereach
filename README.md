@@ -17,6 +17,10 @@ npm test
 
 The homepage uses normal page links. Vite runs in multi-page mode, so deliberately unfinished destinations return 404 rather than silently serving the homepage. No placeholder destination pages or enquiry backend have been added.
 
+## Brand theme
+
+`src/theme.css` defines the exact navy `#13294A` and blue `#2B9FD6`. Subtle surfaces mix 10% blue with white; process/review surfaces mix 18%. Functional links mix blue with navy for contrast. All component colours and SVG brand fills use these tokens.
+
 ## Imagery and launch details
 
 All current imagery is temporary AI-generated architectural concept imagery, not evidence of completed DroneReach work. The visible disclaimers are retained.
@@ -24,7 +28,7 @@ All current imagery is temporary AI-generated architectural concept imagery, not
 - Existing hero: `public/images/hero.webp`.
 - Service cards: `sector-0.webp` (façade), `sector-1.webp` (cladding), and `service-{roof,windows,solar,render,signage,residential}.webp`.
 - Existing illustrative before/after: `project-0.webp` and `project-1.webp`.
-- Original SVG contour asset: `public/patterns/contours.svg`. CSS custom properties `--contour-color`, `--contour-scale` and `--contour-opacity` configure its decoration.
+- Original SVG contour asset: `public/patterns/contours.svg`. CSS custom properties `--contour-color`, `--contour-scale`, `--contour-opacity`, `--contour-position` and `--contour-fade` configure its decoration. It contains 16 elevations of one smooth height field, exported as static paths. Regenerate with `python scripts/generate-contours.py` (development-only NumPy and contourpy required).
 
 Replace concept imagery and SVG logo with approved business assets when available. Supply real contact information and approved legal copy. Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` for a launch build until a genuine approved review is available.
 
