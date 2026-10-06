@@ -1,27 +1,56 @@
 # DroneReach
 
-A responsive homepage concept built with Vite, semantic HTML, CSS and JavaScript.
+Responsive homepage built with Vite, semantic HTML, CSS and JavaScript.
 
-## Develop
+## Develop and verify
 
 Use Node.js 20.19+ or 22.12+.
 
 ```sh
 npm ci --cache /tmp/dronereach-npm
 npm run dev
+npm run build
+npm test
 ```
 
-`npm run build` creates the production site in `dist`. `npm run preview` serves that build.
+`npm run preview` serves the production build in `dist`. Tests use `/usr/bin/chromium`; update the executable path in `playwright.config.js` on another machine.
 
-## Verify
+The homepage uses normal page links. Vite runs in multi-page mode, so deliberately unfinished destinations return 404 rather than silently serving the homepage. No placeholder destination pages or enquiry backend have been added.
 
-`npm test` checks 375, 390, 768 and 1440px layouts, overflow, mobile-menu keyboard handling, dialogs and local enquiry preparation. Tests use the cloud machine's `/usr/bin/chromium`; change `executablePath` in `playwright.config.js` for another machine.
+## Imagery and launch details
 
-## Before launch
+All current imagery is temporary AI-generated architectural concept imagery, not evidence of completed DroneReach work. The visible disclaimers are retained.
 
-- Replace AI-generated, explicitly illustrative images in `public/images` with approved business photography. `hero.webp`, `sector-0.webp` through `sector-2.webp`, and `project-0.webp`/`project-1.webp` correspond to the hero, sector cards and comparison.
-- Supply approved contact details, privacy/terms information, and an actual enquiry delivery integration. The form currently prepares a copyable brief locally; it does not send or store it.
-- Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` when building to hide the feedback placeholder until a verified review is supplied.
-- The logo is an editable SVG concept, to be replaced with official artwork if available.
+- Existing hero: `public/images/hero.webp`.
+- Service cards: `sector-0.webp` (façade), `sector-1.webp` (cladding), and `service-{roof,windows,solar,render,signage,residential}.webp`.
+- Existing illustrative before/after: `project-0.webp` and `project-1.webp`.
+- Original SVG contour asset: `public/patterns/contours.svg`. CSS custom properties `--contour-color`, `--contour-scale` and `--contour-opacity` configure its decoration.
 
-No analytics, external font requests, or external image requests are included.
+Replace concept imagery and SVG logo with approved business assets when available. Supply real contact information and approved legal copy. Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` for a launch build until a genuine approved review is available.
+
+## Linked pages still to build
+
+Only `/` is implemented. The following links intentionally point to future pages:
+
+- `/services`
+- `/services/facade-cleaning`
+- `/services/cladding-cleaning`
+- `/services/roof-cleaning`
+- `/services/window-glass-cleaning`
+- `/services/solar-panel-cleaning`
+- `/services/render-cleaning`
+- `/services/signage-cleaning`
+- `/services/residential-exterior-cleaning`
+- `/sectors`
+- `/sectors/commercial-buildings`
+- `/sectors/warehouses-industrial`
+- `/case-studies`
+- `/case-studies/building-facade-cleaning`
+- `/about`
+- `/contact`
+- `/how-it-works`
+- `/privacy`
+- `/terms`
+- `/cookies`
+
+The skip link is the only in-page anchor; it transfers keyboard focus to the main content. No analytics or external font/image requests are included.
