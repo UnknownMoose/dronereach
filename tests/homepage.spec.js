@@ -30,3 +30,12 @@ test('enquiry prepares a brief without submitting it',async({page})=>{
  await page.keyboard.press('Escape'); await expect(page.getByRole('dialog')).not.toBeVisible();
  await page.getByRole('button',{name:'Learn more'}).first().click(); await expect(page.getByRole('dialog')).toContainText('Commercial buildings');
 });
+test('skip link stays hidden until focused and transfers focus to main',async({page})=>{
+ await page.goto('/');
+ const skip=page.getByRole('link',{name:'Skip to content'});
+ expect(await skip.evaluate(el=>getComputedStyle(el).clipPath)).toBe('inset(50%)');
+ await page.keyboard.press('Tab');await expect(skip).toBeFocused();
+ expect(await skip.evaluate(el=>el.getBoundingClientRect().top)).toBe(12);
+ expect(await skip.evaluate(el=>getComputedStyle(el).clipPath)).toBe('none');
+ await page.keyboard.press('Enter');await expect(page.locator('main')).toBeFocused();
+});

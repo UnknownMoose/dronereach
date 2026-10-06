@@ -1,3 +1,4 @@
+document.querySelector('.skip-link').addEventListener('click', () => document.querySelector('#main').focus());
 const menuButton = document.querySelector('.menu-toggle');
 const nav = document.querySelector('#navigation');
 function closeMenu() { menuButton.setAttribute('aria-expanded', 'false'); nav.classList.remove('open'); }

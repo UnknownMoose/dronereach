@@ -1,0 +1,21 @@
+:root{--pale:#f0f9fd;--blue:#e0f3fc;--blue-accent:#c5eaf9;--link:#0879a5}
+/* The SVG mask inherits these tokens; each section can tune colour, scale and opacity. */
+.contour-art{--contour-color:#249fd0;--contour-opacity:.34;--contour-scale:1400px;position:absolute;inset:0;background:var(--contour-color);opacity:var(--contour-opacity);mask:url('/patterns/contours.svg') center right / var(--contour-scale) 100% no-repeat;pointer-events:none;z-index:0}
+.hero-band{position:relative;overflow:hidden;background:linear-gradient(105deg,#fff 10%,#f0f9fd 48%,#c5eaf9 100%)}
+.hero-band>.contour-art{inset:0 -140px 0 20%;mask-image:linear-gradient(to right,transparent,#000),url('/patterns/contours.svg');mask-composite:intersect;--contour-scale:1400px;--contour-opacity:.4}
+.hero{position:relative;z-index:1;padding-top:35px;padding-bottom:45px}
+h1{font-size:clamp(38px,3.65vw,52px);line-height:1.1;text-wrap:pretty}.no-break{white-space:nowrap}.hero-copy{max-width:580px}.hero-photo figcaption{color:#465f7c}
+.cyan{color:var(--navy);background:var(--cyan)}.cyan:hover{background:#48b4de}
+.benefits{gap:16px}.benefit-icon{display:grid;place-items:center;flex:0 0 32px;width:32px;height:32px;background:#e0f3fc;border-radius:9px;color:#087fab}.benefit-icon svg{width:22px;height:22px}.benefits strong{font-size:12px}
+.service-card{background:#f0f9fd;border-color:#c5e3f1;transition:border-color .15s,background .15s}.service-card:hover,.service-card:focus-within{background:#e6f5fc;border-color:#73bedb}.service-card p{color:#465f7c}
+.process{position:relative;overflow:hidden;background:var(--blue)}.process>.container{position:relative;z-index:1}.process>.contour-art{inset:0 -160px 0 35%;--contour-opacity:.35;mask-image:linear-gradient(to right,transparent,#000),url('/patterns/contours.svg');mask-composite:intersect}
+.step-number{background:#82d3f1;color:var(--navy)}.steps p{color:#465f7c}
+.facade span{background:#c5eaf9;color:var(--navy)}.project-copy .eyebrow{color:#0879a5}
+.feedback{background:var(--blue)}.feedback .muted{color:#4d6480}.review>div{border-left-color:#249fd0}
+.cta{position:relative;grid-template-columns:2fr 1fr}.cta>div:not(.contour-art){position:relative;z-index:1}.cta>.contour-art{inset:0 33.333% 0 0;--contour-color:#59bdea;--contour-opacity:.35;--contour-scale:1000px}.cta>div:first-of-type:not(.contour-art){padding:30px 36px}.cta>div:nth-child(2){padding:30px 36px}.cta-action{background:#249fd0}.cta .eyebrow{color:#d5eafa}.cta p:last-child{color:#e1edf9}
+footer{background:#edf7fc}.footer-grid p,.footer-grid a:not(.brand),.footer-grid button,.footer-bottom,.footer-bottom button{color:#4d6480}.footer-grid h3{color:var(--navy)}.footer-bottom{border-top-color:#cbe0ed}
+.skip-link{position:fixed;top:12px;left:20px;z-index:100;background:white;color:var(--navy);border:2px solid #0879a5;border-radius:5px;padding:14px 20px;transform:none;clip-path:inset(50%);width:1px;height:1px;overflow:hidden;white-space:nowrap}.skip-link:focus{clip-path:none;width:auto;height:auto;overflow:visible;outline:3px solid var(--navy);outline-offset:3px}main:focus{outline:none}
+@media(min-width:600px) and (max-width:899px){h1{font-size:48px}.hero-copy{max-width:650px}.hero-band>.contour-art{inset:25% -100px 0 0;--contour-opacity:.3}.cta{grid-template-columns:2fr 1fr}.cta-action{padding:20px}.cta-action .button{padding-inline:18px;gap:12px;white-space:nowrap}}
+@media(max-width:599px){h1{font-size:clamp(36px,9.7vw,48px)}.hero{padding-top:30px;padding-bottom:28px}.hero-band{background:linear-gradient(160deg,#fff 8%,#f0f9fd 50%,#c5eaf9)}.hero-band>.contour-art{inset:40% -80px -20px 0;--contour-scale:850px;--contour-opacity:.3}.benefits li{gap:10px}.benefits strong{font-size:13px}.process>.contour-art{inset:0 -300px 0 30%;--contour-opacity:.18;--contour-scale:900px}.cta{grid-template-columns:1fr}.cta>div:nth-child(2){padding:28px 24px}.cta>.contour-art{inset:0 0 80px;--contour-opacity:.27;--contour-scale:800px}.cta-action{padding:22px 24px}}
+@media(prefers-reduced-motion:reduce){.service-card{transition:none}}
+.skip-link:focus{top:12px}
