@@ -15,6 +15,6 @@ document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && nav.classList.contains('open')) { closeMenu(); menuButton.focus(); }
 });
 matchMedia('(min-width: 900px)').addEventListener('change', closeMenu);
-// Hide the concept review on launch until genuine approved feedback is available.
-if (import.meta.env.VITE_SHOW_REVIEW_PLACEHOLDER === 'false') document.querySelector('[data-review-placeholder]').hidden = true;
+// Only preview/demo builds may explicitly opt in to the concept review.
+document.querySelector('[data-review-placeholder]').hidden = import.meta.env.VITE_SHOW_REVIEW_PLACEHOLDER !== 'true';
 document.querySelector('#year').textContent = new Date().getFullYear();

@@ -254,6 +254,7 @@ test('navigation, sectors, project and legal links use real page URLs', async ({
   await expect(page.locator('dialog, .cta, [data-quote], form')).toHaveCount(0);
   await expect(page.locator('body')).not.toContainText('Tell us about your building.');
   await expect(page.locator('[data-review-placeholder]')).toContainText('Review placeholder');
+  await expect(page.locator('[data-review-placeholder]')).toBeHidden();
   await expect(page.locator('.projects')).toContainText('Illustrative comparison — not completed DroneReach work.');
   const sectorSection = page.locator('.audience');
   await expect(sectorSection).toBeVisible();
@@ -281,8 +282,8 @@ test('hover and keyboard focus brighten photos while titles and their bottom gra
 
   await tile.hover();
   await expect.poll(async () => (await tileAppearance(tile)).overlayOpacity).toBeLessThan(0.15);
+  await expect.poll(async () => (await tileAppearance(tile)).scale).toBeCloseTo(1.03, 2);
   const hovered = await tileAppearance(tile);
-  expect(hovered.scale).toBeCloseTo(1.03, 2);
   expect(hovered.titleX).toBeCloseTo(initial.titleX, 1);
   expect(hovered.titleY).toBeCloseTo(initial.titleY, 1);
   expect(hovered.bottomGradient).toBe(initial.bottomGradient);
@@ -293,10 +294,10 @@ test('hover and keyboard focus brighten photos while titles and their bottom gra
   await page.keyboard.press('Tab');
   await expect(tile).toBeFocused();
   await expect.poll(async () => (await tileAppearance(tile)).overlayOpacity).toBeLessThan(0.15);
+  await expect.poll(async () => (await tileAppearance(tile)).scale).toBeCloseTo(1.03, 2);
   const focused = await tileAppearance(tile);
   expect(focused.outlineStyle).not.toBe('none');
   expect(focused.outlineWidth).toBeGreaterThanOrEqual(2);
-  expect(focused.scale).toBeCloseTo(1.03, 2);
   expect(focused.titleX).toBeCloseTo(initial.titleX, 1);
   expect(focused.titleY).toBeCloseTo(initial.titleY, 1);
   await expectNavigationRequest(page, '/services/facade-cleaning', () => page.keyboard.press('Enter'));
