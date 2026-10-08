@@ -1,16 +1,15 @@
-/* Exact DroneReach brand values. Every tint and functional colour derives from these. */
+/* One brand blue, neutral surfaces, and darker blue states for accessible controls. */
 :root {
-  --navy: #13294A;
-  --brand-blue: #2B9FD6;
-  --cyan: var(--brand-blue);
+  --brand-blue: #0096D6;
+  --ink: #111;
   --white: #fff;
-  --pale: color-mix(in srgb, var(--brand-blue) 10%, var(--white));
-  --blue: color-mix(in srgb, var(--brand-blue) 18%, var(--white));
-  --blue-accent: color-mix(in srgb, var(--brand-blue) 20%, var(--white));
-  --border: color-mix(in srgb, var(--brand-blue) 20%, var(--white));
-  --muted: color-mix(in srgb, var(--navy) 75%, var(--white));
-  --label: color-mix(in srgb, var(--navy) 68%, var(--white));
-  --link: color-mix(in srgb, var(--brand-blue) 60%, var(--navy));
-  --navy-hover: color-mix(in srgb, var(--navy) 88%, var(--white));
-  --blue-hover: color-mix(in srgb, var(--brand-blue) 88%, var(--white));
+  --surface: #f5f5f5;
+  --border: #d9d9d9;
+  --muted: #555;
+  --label: #666;
+  --on-dark-muted: #ccc;
+  --on-dark-border: #444;
+  --blue-hover: color-mix(in srgb, var(--brand-blue) 90%, #000);
+  --link: color-mix(in srgb, var(--brand-blue) 75%, #000);
+  --link-hover: color-mix(in srgb, var(--brand-blue) 65%, #000);
 }

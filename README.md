@@ -25,7 +25,7 @@ Video tests generate a temporary WebM using FFmpeg; no test video is shipped in 
 
 ## Brand theme
 
-`src/theme.css` defines the exact navy `#13294A` and blue `#2B9FD6`. Subtle surfaces mix 10% blue with white; process/review surfaces mix 18%. Functional links mix blue with navy for contrast. All component colours and SVG brand fills use these tokens.
+`src/theme.css` defines one brand-blue token, `#0096D6`, paired with black/near-black, white and neutral greys. Primary buttons and key accents use solid brand blue; button hover/active states mix it with black, never white. Small links use a darker blue for contrast. Benefits and review surfaces are neutral grey; process and footer surfaces are near-black. Hero/card scrims are neutral black, preserving natural photographic hues. The contour artwork uses a neutral grey mask, with no translucent blue surfaces. Dark text on the blue buttons is deliberate: white small text on the brand blue falls below 4.5:1 contrast.
 
 ## Imagery and launch details
 

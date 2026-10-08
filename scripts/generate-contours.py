@@ -92,7 +92,7 @@ for level in levels:
         paths.append(f'<path d="{path}"/>')
 
 svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" '
-       'fill="none" stroke="#2B9FD6" stroke-width="1" '
+       'fill="none" stroke="currentColor" stroke-width="1" '
        'stroke-linecap="round" stroke-linejoin="round" '
        'preserveAspectRatio="xMidYMid slice">\n'
        '<!-- 16 elevations of one smooth, warped terrain field. -->\n'

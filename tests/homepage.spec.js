@@ -137,8 +137,8 @@ for (const width of [390, 768, 1024, 1440]) {
     }));
     expect(circles).toHaveLength(3);
     for (const circle of circles) {
-      expect(circle.background).toBe('rgb(43, 159, 214)');
-      expect(circle.color).toBe('rgb(19, 41, 74)');
+      expect(circle.background).toBe('rgb(0, 150, 214)');
+      expect(circle.color).toBe('rgb(17, 17, 17)');
       expect(circle.width).toBe(width < 600 ? 44 : 48);
       expect(circle.height).toBe(circle.width);
     }
@@ -354,42 +354,113 @@ test('skip link stays hidden until focused and transfers focus to main', async (
   await expect(page.locator('main')).toBeFocused();
 });
 
-test('brand colours and pale backgrounds use the exact navy and blue palette', async ({ page }) => {
+test('shared palette uses exact brand blue and neutral surfaces without translucent blue', async ({ page }) => {
   await page.goto('/');
   const palette = await page.evaluate(() => {
     const root = getComputedStyle(document.documentElement);
     const context = document.createElement('canvas').getContext('2d');
-    const colour = (selector, property, pseudo) => {
+    const rgba = value => {
       context.clearRect(0, 0, 1, 1);
-      context.fillStyle = getComputedStyle(document.querySelector(selector), pseudo)[property];
+      context.fillStyle = value;
       context.fillRect(0, 0, 1, 1);
-      return Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3);
+      return Array.from(context.getImageData(0, 0, 1, 1).data);
     };
+    const colour = (selector, property, pseudo) => rgba(getComputedStyle(document.querySelector(selector), pseudo)[property]).slice(0, 3);
+    const blueSurfaces = [];
+    for (const element of document.querySelectorAll('*')) {
+      for (const pseudo of [null, '::before', '::after']) {
+        const style = getComputedStyle(element, pseudo);
+        const [r, g, b, a] = rgba(style.backgroundColor);
+        if (a > 0 && b > g && g > r) blueSurfaces.push({r, g, b, a, opacity: style.opacity});
+      }
+    }
     return {
-      navyToken: root.getPropertyValue('--navy').trim().toLowerCase(),
       blueToken: root.getPropertyValue('--brand-blue').trim().toLowerCase(),
+      obsoleteTokens: ['--navy', '--cyan', '--pale', '--blue', '--blue-accent', '--navy-hover'].map(name => root.getPropertyValue(name).trim()),
       heading: colour('h1', 'color'),
       sectionHeading: colour('.services h2', 'color'),
-      darkButton: colour('.button.navy', 'backgroundColor'),
-      blueButton: colour('.button.cyan', 'backgroundColor'),
-      blueButtonText: colour('.button.cyan', 'color'),
+      blueButton: colour('.button.primary', 'backgroundColor'),
+      blueButtonText: colour('.button.primary', 'color'),
       benefitIcon: colour('.benefit-icon', 'color'),
+      benefitIconBackground: colour('.benefit-icon', 'backgroundColor'),
       cardOverlay: colour('.service-tile', 'backgroundColor', '::before'),
-      subtleBackground: colour('footer', 'backgroundColor'),
+      benefitBackground: colour('.benefits-section', 'backgroundColor'),
+      footerBackground: colour('footer', 'backgroundColor'),
+      footerText: colour('.footer-grid p', 'color'),
       processBackground: colour('.process', 'backgroundColor'),
+      processText: colour('.steps p', 'color'),
       reviewBackground: colour('.feedback', 'backgroundColor'),
+      contourColour: colour('.contour-art', 'backgroundColor'),
+      blueSurfaces,
     };
   });
+  expect(palette.blueToken).toBe('#0096d6');
+  expect(palette.obsoleteTokens).toEqual(['', '', '', '', '', '']);
   expect(palette.heading).toEqual([255, 255, 255]);
-  expect(palette.navyToken).toBe('#13294a');
-  expect(palette.blueToken).toBe('#2b9fd6');
-  for (const name of ['sectionHeading', 'darkButton', 'blueButtonText', 'cardOverlay']) expect(palette[name], name).toEqual([19, 41, 74]);
-  for (const name of ['blueButton', 'benefitIcon']) expect(palette[name], name).toEqual([43, 159, 214]);
-  // Expected rendered sRGB mixes of the brand blue with white at 10% and 18%.
-  expect(palette.subtleBackground).toEqual([234, 245, 251]);
-  expect(palette.processBackground).toEqual([217, 238, 248]);
-  expect(palette.reviewBackground).toEqual([217, 238, 248]);
+  for (const name of ['sectionHeading', 'blueButtonText', 'cardOverlay', 'footerBackground', 'processBackground']) expect(palette[name], name).toEqual([17, 17, 17]);
+  for (const name of ['blueButton', 'benefitIcon']) expect(palette[name], name).toEqual([0, 150, 214]);
+  expect(palette.benefitIconBackground).toEqual([255, 255, 255]);
+  for (const name of ['benefitBackground', 'reviewBackground']) expect(palette[name], name).toEqual([245, 245, 245]);
+  for (const name of ['footerText', 'processText', 'contourColour']) expect(palette[name], name).toEqual([204, 204, 204]);
+  expect(palette.blueSurfaces.length).toBeGreaterThan(0);
+  for (const surface of palette.blueSurfaces) {
+    expect(surface).toEqual({r: 0, g: 150, b: 214, a: 255, opacity: '1'});
+  }
 });
+
+for (const width of [390, 1440]) {
+  test(`buttons, links and neutral overlays preserve contrast through interaction at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({width, height: 1000});
+    await page.goto('/');
+    const primary = page.locator('.hero-actions .primary');
+    const snapshot = async locator => locator.evaluate(element => {
+      const context = document.createElement('canvas').getContext('2d');
+      const rgb = colour => { context.fillStyle = colour; context.fillRect(0, 0, 1, 1); return Array.from(context.getImageData(0, 0, 1, 1).data).slice(0, 3); };
+      const style = getComputedStyle(element);
+      return {background: rgb(style.backgroundColor), foreground: rgb(style.color)};
+    });
+    const luminance = rgb => rgb.map(value => { const v = value / 255; return v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }).reduce((sum, value, i) => sum + value * [.2126, .7152, .0722][i], 0);
+    const contrast = (fg, bg) => { const [a, b] = [luminance(fg), luminance(bg)].sort((a, b) => b - a); return (a + .05) / (b + .05); };
+    const assertContrast = async (selector, background) => {
+      const sample = await snapshot(page.locator(selector).first());
+      expect(contrast(sample.foreground, background || sample.background), selector).toBeGreaterThanOrEqual(4.5);
+      return sample;
+    };
+    const normal = await assertContrast('.hero-actions .primary');
+    expect(normal.background).toEqual([0, 150, 214]);
+    await primary.hover();
+    await expect.poll(async () => (await snapshot(primary)).background[1]).toBe(135);
+    const hover = await assertContrast('.hero-actions .primary');
+    expect(hover.background[2]).toBeLessThan(normal.background[2]);
+    await page.mouse.down();
+    await assertContrast('.hero-actions .primary');
+    await page.mouse.move(0, 0); await page.mouse.up();
+    await primary.focus();
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Shift+Tab');
+    await expect(primary).toBeFocused();
+    expect(await primary.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
+    await assertContrast('.hero-actions .outline');
+    await assertContrast('.services .text-link', [255, 255, 255]);
+    await assertContrast('.audience-links a', [255, 255, 255]);
+    await assertContrast('.benefits p', [245, 245, 245]);
+    await assertContrast('.steps p', [17, 17, 17]);
+    await assertContrast('.process .text-link', [17, 17, 17]);
+    await assertContrast('.footer-grid a:not(.brand)', [17, 17, 17]);
+    await page.locator('.footer-grid a:not(.brand)').first().hover();
+    await assertContrast('.footer-grid a:not(.brand)', [17, 17, 17]);
+    const images = await page.locator('.hero-background,.hero-video,.service-tile img,.facade img').evaluateAll(elements => elements.map(el => getComputedStyle(el).filter));
+    expect(images.every(filter => filter === 'none')).toBe(true);
+    if (width < 900) {
+      await page.getByRole('button', {name: 'Menu'}).click();
+      await expect(page.locator('nav')).toBeVisible();
+      expect((await snapshot(page.locator('nav'))).background).toEqual([17, 17, 17]);
+      await assertContrast('nav .primary');
+      await page.screenshot({path: `test-results/palette-menu-${width}.png`});
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  });
+}
 
 test('contour artwork stays decorative and clipped to the process section', async ({ page }) => {
   await page.goto('/');
