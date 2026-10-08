@@ -13,7 +13,7 @@ npm run build
 npm test
 ```
 
-`npm run preview` serves the production build in `dist`. Tests use `/usr/bin/chromium`; update the executable path in `playwright.config.js` on another machine.
+`npm run preview` serves the production build in `dist`. `npm test` builds and serves the production site, with review previews disabled, rather than testing the development server. Tests use `/usr/bin/chromium` when available; otherwise install Playwright's browser with `npx playwright install chromium`. Review regression tests also build isolated production variants to check the opt-in flag and the JavaScript-disabled default.
 
 The homepage uses normal page links. Vite runs in multi-page mode, so deliberately unfinished destinations return 404 rather than silently serving the homepage. No placeholder destination pages or enquiry backend have been added.
 
@@ -36,7 +36,18 @@ All current imagery is temporary AI-generated architectural concept imagery, not
 - Existing illustrative before/after: `project-0.webp` and `project-1.webp`.
 - Original SVG contour asset: `public/patterns/contours.svg`. CSS custom properties `--contour-color`, `--contour-scale`, `--contour-opacity`, `--contour-position` and `--contour-fade` configure its decoration. It contains 16 elevations of one smooth height field, exported as static paths. Regenerate with `python scripts/generate-contours.py` (development-only NumPy and contourpy required).
 
-Replace concept imagery and SVG logo with approved business assets when available. Supply real contact information and approved legal copy. Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` for a launch build until a genuine approved review is available.
+Replace concept imagery and SVG logo with approved business assets when available. Supply real contact information and approved legal copy. The review placeholder is hidden by default, including in launch and production builds and before JavaScript loads. Keep it hidden until genuine approved feedback is available and replaces the placeholder content.
+
+Only an exact `VITE_SHOW_REVIEW_PLACEHOLDER=true` enables the placeholder for preview or demo use:
+
+```sh
+VITE_SHOW_REVIEW_PLACEHOLDER=true npm run dev
+# Or build a demo, then serve it:
+VITE_SHOW_REVIEW_PLACEHOLDER=true npm run build
+npm run preview
+```
+
+Unset, empty, `false`, and any other values keep the placeholder hidden. This is a build-time flag: changing it when serving an existing build does not change that build. Leave it unset (or set it to `false`) in launch/production build environments, including Vite `.env` files, and rebuild before deployment.
 
 ## Pre-launch content check
 
