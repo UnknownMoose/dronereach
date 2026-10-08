@@ -25,7 +25,7 @@ Video tests generate a temporary WebM using FFmpeg; no test video is shipped in 
 
 ## Brand theme
 
-`src/theme.css` defines one brand-blue token, `#0096D6`, paired with black/near-black, white and neutral greys. Primary buttons and key accents use solid brand blue; button hover/active states mix it with black, never white. Small links use a darker blue for contrast. Benefits and review surfaces are neutral grey; process and footer surfaces are near-black. Hero/card scrims are neutral black, preserving natural photographic hues. The contour artwork uses a neutral grey mask, with no translucent blue surfaces. Dark text on the blue buttons is deliberate: white small text on the brand blue falls below 4.5:1 contrast.
+`src/theme.css` defines only the approved interface palette: brand blue `#0096D6`, pure black `#000000` and white `#FFFFFF`. Light sections and feedback use white; process and footer use pure black. Text is black on white/blue and white on black. Primary buttons use solid brand blue with black text and invert to black/white on hover or active; text links underline, with blue arrows as accents. Focus rings use blue on white/black and white over hero photography. Contour lines use solid brand blue. Only photographic scrims retain black transparency for readability; no grey tokens, colour mixes or faded interface text remain.
 
 ## Imagery and launch details
 
@@ -34,7 +34,7 @@ All current imagery is temporary AI-generated architectural concept imagery, not
 - Existing hero: `public/images/hero.webp`.
 - Service cards: `sector-0.webp` (façade), `sector-1.webp` (cladding), and `service-{roof,windows,solar,render,signage,residential}.webp`.
 - Existing illustrative before/after: `project-0.webp` and `project-1.webp`.
-- Original SVG contour asset: `public/patterns/contours.svg`. CSS custom properties `--contour-color`, `--contour-scale`, `--contour-opacity`, `--contour-position` and `--contour-fade` configure its decoration. It contains 16 elevations of one smooth height field, exported as static paths. Regenerate with `python scripts/generate-contours.py` (development-only NumPy and contourpy required).
+- Original SVG contour asset: `public/patterns/contours.svg`. CSS custom properties `--contour-color`, `--contour-scale` and `--contour-position` configure its decoration. It contains 16 elevations of one smooth height field, exported as static paths. Regenerate with `python scripts/generate-contours.py` (development-only NumPy and contourpy required).
 
 Replace concept imagery and SVG logo with approved business assets when available. Supply real contact information and approved legal copy. Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` for a launch build until a genuine approved review is available.
 
