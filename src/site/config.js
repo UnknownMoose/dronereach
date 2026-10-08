@@ -1,23 +1,17 @@
-// Root-relative destinations work from every page. Shared menus reference these objects.
+import { services } from '../content/services.js';
+
+// Root-relative URLs work from every page. Only publish navigation to real pages.
 export const links = {
   home: { label: 'DroneReach', href: '/' },
   services: { label: 'Services', href: '/services' },
-  sectors: { label: 'Sectors', href: '/sectors' },
-  caseStudies: { label: 'Case studies', href: '/case-studies' },
-  about: { label: 'About', href: '/about' },
-  contact: { label: 'Contact', href: '/contact' },
-  howItWorks: { label: 'How it works', href: '/how-it-works' },
-  commercial: { label: 'Commercial buildings', href: '/sectors/commercial-buildings' },
-  industrial: { label: 'Warehouses & industrial', href: '/sectors/warehouses-industrial' },
-  residential: { label: 'Homes & residential', href: '/services/residential-exterior-cleaning' },
-  roof: { label: 'Roof cleaning', href: '/services/roof-cleaning' },
-  solar: { label: 'Solar panel cleaning', href: '/services/solar-panel-cleaning' },
-  privacy: { label: 'Privacy', href: '/privacy' },
-  terms: { label: 'Terms', href: '/terms' },
-  cookies: { label: 'Cookies', href: '/cookies' },
+  contact: { label: 'Get a quote', href: '/contact' },
 };
+export const serviceNavigation = [{ label: 'View all services', href: '/services' }, ...services.map(({ title, href }) => ({ label: title, href }))];
+// Add Sectors and About here once genuine pages exist; no placeholder links.
+export const mainNavigation = [];
+export const footerExplore = [links.home, links.services, links.contact];
+export const footerServices = serviceNavigation.slice(1);
+// Fill only with verified business details. Never display invented contact methods.
+export const businessContact = { email: 'contact@dronereach.co.uk', phone: '' };
 
-export const mainNavigation = [links.services, links.sectors, links.caseStudies, links.about, links.contact];
-export const footerExplore = [links.services, links.sectors, links.howItWorks, links.contact];
-export const footerServices = [links.commercial, links.industrial, links.residential, links.roof, links.solar];
-export const legalNavigation = [links.privacy, links.terms, links.cookies];
+export const productionOrigin = 'https://dronereach.co.uk';

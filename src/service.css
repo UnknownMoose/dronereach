@@ -74,3 +74,9 @@
   .service-faq summary { font-size:18px; padding-block:22px; }
   .service-page .service-faq details p { padding-right:0; font-size:16px; }
 }
+.service-page .steps p { color:var(--white); font-size:16px; margin:14px 0 0; }
+.service-tile--static::before,.service-tile--static:hover::before { opacity:.22; }
+.service-tile--static img,.service-tile--static:hover img { transform:none; }
+/* Three cards stay legible at tablet widths; static titles need no arrow space. */
+.service-page .service-sectors .service-tile h3 { font-size:clamp(22px,2vw,28px); }
+.service-page .service-sectors .service-tile--static h3 { right:24px; }

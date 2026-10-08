@@ -1,6 +1,6 @@
 # DroneReach
 
-Responsive homepage built with Vite, semantic HTML, CSS and JavaScript.
+A responsive, multi-page exterior building cleaning website built with Vite, semantic HTML, CSS and JavaScript. Shared components and all page content are rendered into the initial HTML during development and production builds.
 
 ## Develop and verify
 
@@ -11,27 +11,30 @@ npm ci --cache /tmp/dronereach-npm
 npm run dev
 npm run build
 npm test
+npm run preview
 ```
 
-`npm run preview` serves the production build in `dist`. Tests use `/usr/bin/chromium`; update the executable path in `playwright.config.js` on another machine.
+Tests use `/usr/bin/chromium`; adjust `playwright.config.js` for another machine. There is no separate lint script. Production output is in `dist`. The existing clean URLs have no trailing slash; Vite development and preview resolve the flat HTML entries. Configure the production host to resolve clean URLs to the corresponding `.html` file, without routing missing pages back to the homepage.
 
-The homepage uses normal page links. Vite runs in multi-page mode, so deliberately unfinished destinations return 404 rather than silently serving the homepage. No placeholder destination pages or enquiry backend have been added.
+## Shared document and navigation
 
-## Shared page layout
+`src/site/layout.js` renders the document, metadata, skip link, global header, main content and global footer. `header.js`, `footer.js` and `brand.js` remain the single source of shared markup. `config.js` defines navigation, the verified production origin `https://dronereach.co.uk`, and approved business contact details. `src/site/navigation.js` manages the click-operated Services disclosure and mobile menu, including keyboard focus, expanded states, Escape, outside-click dismissal and responsive reset.
 
-`src/site/layout.js` renders the common document, skip link, header, main and footer. `header.js`, `footer.js` and `brand.js` are the single source for shared markup; `config.js` defines navigation destinations and menus. Vite renders these templates during development and production builds, so the header/footer and metadata are in the initial HTML. Shared navigation code is in `src/site/navigation.js`; hero playback initializes only when a page contains a hero.
+Only genuine page destinations are published in navigation. Sectors, About, project details, legal pages and a separate process page do not exist, so they are not linked. Homepage commercial/industrial category labels and service-page building types without destinations are non-interactive; heritage links to its service page. The illustrative project showcase and labelled review placeholder remain intact.
 
-To add a real page later:
+To add a normal page:
 
-1. Create a root-relative entry such as `about/index.html`. Start it with the JSON page comment below, followed by page-specific HTML. Do not include a second document, header, main or footer.
-2. Set `title`, `description` and `headerVariant`. Use `solid` (the default) for a full-width black header in normal document flow, or `hero` for the overlay header when the content includes the existing full-screen hero.
-3. Add the new HTML entry alongside `index.html` in `vite.config.js` under `build.rollupOptions.input`, using absolute paths via Node's `resolve`. Vite will emit `about/index.html`; navigation remains root-relative. Run the build and browser checks.
+1. Create a flat HTML entry, such as `about.html`, for a clean `/about` URL. Include a JSON `page` comment followed by page content; do not duplicate the document, header, main or footer.
+2. Set unique `title`, `description`, `path` and `headerVariant`. `solid` is a black header in normal flow; `hero` overlays the existing full-screen homepage hero. Optional `styles` contains local `/src/*.css` paths.
+3. Register the entry in `vite.config.js`, then add its genuine destination to the shared navigation configuration where appropriate.
+4. Build and verify direct access, refresh, keyboard navigation and mobile layout.
 
 ```html
 <!-- page
 {
-  "title": "About DroneReach",
+  "title": "Your approved page title | DroneReach",
   "description": "Your approved page description.",
+  "path": "/about",
   "headerVariant": "solid"
 }
 -->
@@ -41,63 +44,57 @@ To add a real page later:
 </section>
 ```
 
-The homepage and façade service are the only public page entries. The generic solid-header fixture used by browser tests exists only in intercepted test responses.
+The layout plugin creates canonical links from the approved production origin and each page path. An optional `SITE_URL` environment variable can replace the origin for another verified production domain. The repository has no existing sitemap.
 
-## Service pages
+## Service catalogue
 
-`services/facade-cleaning.html` uses the global layout with `headerVariant: "solid"` and `styles: ["/src/service.css"]`. The flat HTML entry preserves the existing clean route `/services/facade-cleaning`; Vite serves it in development and preview. The homepage card already links there and is unchanged.
+`src/content/services.js` contains each service's metadata, copy, images, benefits, checklist, building types and FAQs. `src/site/service.js` is the shared service-page and photographic-card template. `src/service.css` contains the reusable service layout; `src/pages.css` adds overview and contact styling. Editing service data updates the page, homepage/overview cards and global service links together.
 
-For another service, copy the service-specific content structure, replace metadata/copy/images/links, and register its HTML entry in `vite.config.js`. Reuse `.service-page`, hero, benefits, introduction, process, sector cards, FAQ and quote classes. The page's optional `styles` array adds local CSS without loading service styles on the homepage. FAQs use native `details`/`summary`, initially closed, with built-in keyboard/expanded-state support and no extra script.
+Each service entry in `services/*.html` contains only its service slug:
 
-All façade page photographs remain illustrative concept assets: `hero.webp`, `sector-0.webp`, `sector-1.webp`, and `service-roof.webp` for the traditional stone/slate heritage card. Replace them with approved DroneReach photography before launch. Quote buttons reuse `/contact`; `/services`, `/contact` and the three linked sector pages are still intentionally unfinished destinations.
+```html
+<!-- page
+{"service":"cladding-cleaning"}
+-->
+```
 
-## Launch video
+The Vite layout plugin renders the complete service template in initial HTML, and `vite.config.js` registers all service entries from the shared catalogue. Native `details`/`summary` FAQs work with keyboard and touch without an accordion library. Building cards link only to genuine destinations; cards identifying the current service are non-interactive.
 
-Set the single `videoSrc` value in `public/hero-config.json` to the actual footage URL, for example a locally hosted `/videos/drone-cleaning.webm`. Leave it empty until footage is available. The JSON file is fetched at runtime; changing the deployed configuration does not require rebuilding the hero layout. The current image stays underneath as poster/fallback. Playback is muted, looping and inline; the pause/play control appears only after successful playback. Reduced-motion users see the static image without a video request.
+Implemented routes:
 
-Video tests generate a temporary WebM using FFmpeg; no test video is shipped in the website.
-
-## Brand theme
-
-`src/theme.css` defines only the approved interface palette: brand blue `#0096D6`, pure black `#000000` and white `#FFFFFF`. Light sections and feedback use white; process and footer use pure black. Text is black on white/blue and white on black. Primary buttons use solid brand blue with black text and invert to black/white on hover or active; text links underline, with blue arrows as accents. Focus rings use blue on white/black and white over hero photography. Only photographic scrims retain black transparency for readability; no grey tokens, colour mixes or faded interface text remain.
-
-## Imagery and launch details
-
-All current imagery is temporary AI-generated architectural concept imagery, not evidence of completed DroneReach work. The visible disclaimers are retained.
-
-- Existing hero: `public/images/hero.webp`.
-- Service cards: `sector-0.webp` (façade), `sector-1.webp` (cladding), and `service-{roof,windows,solar,render,signage,residential}.webp`.
-- Existing illustrative before/after: `project-0.webp` and `project-1.webp`.
-
-Replace concept imagery and SVG logo with approved business assets when available. Supply real contact information and approved legal copy. Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` for a launch build until a genuine approved review is available.
-
-## Pre-launch content check
-
-Substantiate the supplied “Up to 5 times faster than conventional cleaning methods on suitable jobs” claim before launch. The benefits section uses the supplied marketing copy without adding supporting statistics, citations or comparisons.
-
-## Linked pages still to build
-
-Only `/` and `/services/facade-cleaning` are implemented. The following links intentionally point to future pages:
-
+- `/`
 - `/services`
+- `/services/facade-cleaning`
 - `/services/cladding-cleaning`
 - `/services/roof-cleaning`
 - `/services/window-glass-cleaning`
 - `/services/solar-panel-cleaning`
 - `/services/render-cleaning`
-- `/services/signage-cleaning`
-- `/services/residential-exterior-cleaning`
-- `/sectors`
-- `/sectors/commercial-buildings`
-- `/sectors/warehouses-industrial`
-- `/sectors/heritage-buildings`
-- `/case-studies`
-- `/case-studies/building-facade-cleaning`
-- `/about`
+- `/services/shopfront-signage-cleaning`
+- `/services/heritage-building-cleaning`
 - `/contact`
-- `/how-it-works`
-- `/privacy`
-- `/terms`
-- `/cookies`
 
-The skip link is the only in-page anchor; it transfers keyboard focus to the main content. No analytics or external font/image requests are included.
+The quote page uses the approved email `contact@dronereach.co.uk`, with useful details to include. It contains no form or backend. No telephone number has been supplied. Add a verified number to `businessContact` when available; the quote page and footer will both use it. A future form can be added to the contact page's main content without changing the global layout.
+
+## Launch video
+
+Set `videoSrc` in `public/hero-config.json` to the actual footage URL. Leave it empty until footage is available. Changing this deployed configuration does not require rebuilding the hero layout. The image stays underneath as poster/fallback. Playback is muted, looping and inline, with a pause/play control after successful playback. Reduced-motion users see the static image without a video request.
+
+Video tests generate a temporary WebM using FFmpeg; no test video is shipped.
+
+## Brand and imagery
+
+`src/theme.css` defines only brand blue `#0096D6`, black `#000000` and white `#FFFFFF`. White content sections, black process/footer sections, black text on blue buttons, and visible blue/white keyboard focus preserve the approved interface palette. Only photographic scrims use black transparency. Photos retain natural colours; there are no topographic, pale-blue or grey interface backgrounds.
+
+All current photographs are temporary AI-generated architectural concept imagery, not completed DroneReach work. Visible disclaimers remain on the homepage, overview and service pages.
+
+- `hero.webp`: existing drone/glass hero.
+- `sector-0.webp`: glass-fronted building; `sector-1.webp`: metal cladding.
+- `service-commercial-roof.webp`: new large warehouse-roof concept, optimised to WebP, 1200 × 800.
+- `service-windows.webp`, `service-solar.webp`, `service-render.webp`, `service-signage.webp`: corresponding material details.
+- `service-roof.webp`: traditional stone/slate building used for heritage imagery.
+- `project-0.webp`, `project-1.webp`: illustrative before/after comparison.
+
+Replace these with approved business photography and supply launch footage when available. The existing solar and render images are material-detail concepts, not evidence of commercial projects. `sector-2.webp` and `service-residential.webp` are legacy assets no longer used by the pages.
+
+Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` for a launch build until a genuine approved review is available. Substantiate the supplied homepage claim “Up to 5 times faster than conventional cleaning methods on suitable jobs” before launch. No additional performance claims, credentials, prices or testimonials have been introduced.

@@ -15,7 +15,7 @@ test('global components and page metadata are present in the initial homepage HT
     await expect(page.locator('main')).toHaveCount(1);
     await expect(page.getByRole('link', { name: 'Get a quote', exact: true }).first()).toBeVisible();
     await expect(page).toHaveTitle('DroneReach — Specialist exterior cleaning');
-    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', 'DroneReach specialist exterior cleaning for commercial and residential buildings in the North East.');
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', 'DroneReach specialist exterior cleaning for commercial, industrial and heritage buildings in the North East.');
     await expect(page.locator('.header-shell--hero')).toHaveCount(1);
   } finally {
     await context.close();
@@ -51,9 +51,9 @@ for (const width of [390, 1440]) {
     expect(layout.background).toBe('rgb(0, 0, 0)');
     expect(layout.contentTop).toBeGreaterThanOrEqual(layout.headerBottom);
     expect(layout.overflow).toBe(false);
-    for (const link of await page.locator('header a,footer a').all()) expect(await link.getAttribute('href')).toMatch(/^\//);
+    for (const link of await page.locator('header a,footer a').all()) expect(await link.getAttribute('href')).toMatch(/^(\/|mailto:)/);
     await expect(page.locator('header nav a').first()).toHaveAttribute('href', '/services');
-    await expect(page.locator('footer')).toContainText('Phone and email to be added before launch.');
+    await expect(page.locator('footer')).toContainText('contact@dronereach.co.uk');
     if (width < 900) {
       const toggle = page.getByRole('button', { name: 'Menu' });
       await toggle.focus();
@@ -61,8 +61,8 @@ for (const width of [390, 1440]) {
       await expect(toggle).toHaveAttribute('aria-expanded', 'true');
       await expect(page.getByRole('navigation')).toBeVisible();
       await page.keyboard.press('Tab');
-      await expect(page.locator('header nav a').first()).toBeFocused();
-      expect(await page.locator('header nav a').first().evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
+      await expect(page.locator('.services-toggle')).toBeFocused();
+      expect(await page.locator('.services-toggle').evaluate(el => getComputedStyle(el).outlineStyle)).toBe('solid');
       await page.keyboard.press('Escape');
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
       await expect(toggle).toBeFocused();
@@ -70,6 +70,7 @@ for (const width of [390, 1440]) {
       await page.setViewportSize({ width: 1024, height: 1000 });
       await expect(page.locator('.menu-toggle')).toHaveAttribute('aria-expanded', 'false');
     }
+    await page.locator('.services-toggle').click();
     const [request] = await Promise.all([
       page.waitForRequest(request => request.isNavigationRequest() && new URL(request.url()).pathname === '/services'),
       page.locator('header nav a').first().click(),

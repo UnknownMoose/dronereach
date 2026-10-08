@@ -1,0 +1,28 @@
+/* Services overview and quote page use the shared type, container and palette. */
+.page-intro { padding-block:48px 40px; }
+.page-intro h1 { color:var(--black); max-width:950px; font-size:clamp(42px,4.5vw,64px); margin-bottom:24px; }
+.page-intro>p:not(.eyebrow) { max-width:800px; font-size:21px; line-height:1.6; }
+.service-page .page-intro .breadcrumbs { margin-bottom:32px; }
+.services-overview .service-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.overview-service { min-width:0; }
+.overview-service p { font-size:16px; margin:18px 0 8px; }
+.overview-grid>.service-support { margin-top:24px; }
+.contact-page { padding-bottom:64px; }
+.contact-page .page-intro { padding-bottom:36px; }
+.contact-details { display:grid; grid-template-columns:1fr 1fr; gap:80px; padding-block:32px; }
+.contact-details p { max-width:500px; }
+.quote-checklist { list-style:none; margin:0; padding:0; }
+.quote-checklist li { display:flex; gap:16px; font-size:18px; line-height:1.6; padding:0 0 20px; }
+.quote-checklist li::before { content:'✓'; color:var(--brand-blue); font-weight:700; }
+.contact-more { padding-top:12px; }
+.contact-methods:empty { display:none; }
+.contact-methods a { display:block; padding-block:8px; font-size:18px; text-decoration:underline; overflow-wrap:anywhere; }
+@media(max-width:1199px) { .services-overview .service-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:899px) { .contact-details { grid-template-columns:1fr; gap:20px; } }
+@media(max-width:599px) {
+  .page-intro { padding-block:32px; }
+  .page-intro>p:not(.eyebrow) { font-size:18px; }
+  .services-overview .service-grid { grid-template-columns:1fr; }
+  .contact-page { padding-bottom:44px; }
+  .quote-checklist li { font-size:17px; padding-bottom:16px; }
+}

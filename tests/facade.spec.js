@@ -68,15 +68,15 @@ for (const width of [390, 768, 1440]) {
 
 test('homepage façade card opens the service; quotes, sectors and breadcrumbs use intended routes', async ({ page }) => {
   await page.goto('/');
-  await page.locator('a[href="/services/facade-cleaning"]').click();
+  await page.locator('.services a[href="/services/facade-cleaning"]').click();
   await expect(page.locator('h1')).toHaveText('Façade cleaning');
   for (const quote of await page.getByRole('link', {name:'Get a quote',exact:true}).all()) await expect(quote).toHaveAttribute('href','/contact');
-  await expect(page.getByRole('link', {name:'Get a quote',exact:true})).toHaveCount(3);
-  const expected = ['/sectors/commercial-buildings','/sectors/warehouses-industrial','/sectors/heritage-buildings'];
-  for(let i=0;i<3;i++) await expect(page.locator('.service-page .service-tile').nth(i)).toHaveAttribute('href',expected[i]);
+  await expect(page.getByRole('link', {name:'Get a quote',exact:true})).toHaveCount(4);
+  await expect(page.locator('.service-page article.service-tile')).toHaveCount(2);
+  await expect(page.locator('.service-page a.service-tile')).toHaveAttribute('href','/services/heritage-building-cleaning');
   await expect(page.getByRole('navigation', {name:'Breadcrumb'}).getByRole('link',{name:'Home'})).toHaveAttribute('href','/');
   await expect(page.getByRole('navigation', {name:'Breadcrumb'}).getByRole('link',{name:'Services'})).toHaveAttribute('href','/services');
-  await expect(page.getByRole('link',{name:'View all services'})).toHaveAttribute('href','/services');
+  await expect(page.locator('.service-page').getByRole('link',{name:'View all services'})).toHaveAttribute('href','/services');
 });
 
 test('FAQs start collapsed and support keyboard expansion, collapse and visible focus', async ({ page }) => {
@@ -106,7 +106,7 @@ test('service mobile menu retains shared keyboard behaviour', async ({ page }) =
   const toggle=page.getByRole('button',{name:'Menu'});
   await toggle.focus();await page.keyboard.press('Enter');
   await expect(page.getByRole('navigation',{name:'Main navigation'})).toBeVisible();
-  await page.keyboard.press('Tab');await expect(page.locator('header nav a').first()).toBeFocused();
+  await page.keyboard.press('Tab');await expect(page.locator('.services-toggle')).toBeFocused();
   await page.keyboard.press('Escape');await expect(toggle).toBeFocused();
   await expect(toggle).toHaveAttribute('aria-expanded','false');
 });

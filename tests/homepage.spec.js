@@ -7,8 +7,8 @@ const services = [
   ['Window & glass cleaning', '/services/window-glass-cleaning'],
   ['Solar panel cleaning', '/services/solar-panel-cleaning'],
   ['Render cleaning', '/services/render-cleaning'],
-  ['Signage cleaning', '/services/signage-cleaning'],
-  ['Residential cleaning', '/services/residential-exterior-cleaning'],
+  ['Shopfront & signage cleaning', '/services/shopfront-signage-cleaning'],
+  ['Heritage building cleaning', '/services/heritage-building-cleaning'],
 ];
 
 async function loadImages(page) {
@@ -153,7 +153,7 @@ for (const width of [390, 768, 1024, 1440]) {
     }
     const audience = await page.locator('.audience').evaluate(element => {
       const style = getComputedStyle(element);
-      return { top: parseFloat(style.paddingTop), bottom: parseFloat(style.paddingBottom), linkSizes: Array.from(element.querySelectorAll('.audience-links a'), link => parseFloat(getComputedStyle(link).fontSize)) };
+      return { top: parseFloat(style.paddingTop), bottom: parseFloat(style.paddingBottom), linkSizes: Array.from(element.querySelectorAll('.audience-links a,.audience-label'), link => parseFloat(getComputedStyle(link).fontSize)) };
     });
     expect(audience.top).toBe(width < 600 ? 42 : 56);
     expect(audience.bottom).toBe(width < 600 ? 20 : 36);
@@ -214,25 +214,14 @@ test('four drone-cleaning benefits form a separate semantic section between the 
   })).toBe(true);
 });
 
-test('navigation, sectors, project and legal links use real page URLs', async ({ page }) => {
+test('homepage links use implemented destinations while preserving the project and review disclosures', async ({ page }) => {
   await page.goto('/');
   const destinations = {
     'Services': '/services',
     'Our services': '/services',
     'View all services': '/services',
-    'Sectors': '/sectors',
-    'Case studies': '/case-studies',
-    'View projects': '/case-studies',
-    'About': '/about',
-    'Contact': '/contact',
     'Get a quote': '/contact',
-    'How it works': '/how-it-works',
-    'Commercial buildings': '/sectors/commercial-buildings',
-    'Warehouses & industrial': '/sectors/warehouses-industrial',
-    'Homes & residential': '/services/residential-exterior-cleaning',
-    'Privacy': '/privacy',
-    'Terms': '/terms',
-    'Cookies': '/cookies',
+    'Heritage buildings': '/services/heritage-building-cleaning',
   };
   for (const [name, destination] of Object.entries(destinations)) {
     const links = page.getByRole('link', { name, exact: true });
@@ -240,10 +229,10 @@ test('navigation, sectors, project and legal links use real page URLs', async ({
     for (const link of await links.all()) await expect(link).toHaveAttribute('href', destination);
   }
   for (const brand of await page.locator('a.brand').all()) await expect(brand).toHaveAttribute('href', '/');
-  await expect(page.getByRole('link', { name: 'Explore the project' })).toHaveAttribute('href', /^\/case-studies\/[a-z0-9-]+$/);
+  await expect(page.getByRole('link', { name: 'Explore the project' })).toHaveCount(0);
   for (const link of await page.locator('a').all()) {
     if (await link.getAttribute('class') === 'skip-link') continue;
-    expect(await link.getAttribute('href')).toMatch(/^\/(?!.*#)[a-z0-9/-]*$/);
+    expect(await link.getAttribute('href')).toMatch(/^(\/(?!.*#)[a-z0-9/-]*|mailto:contact@dronereach\.co\.uk)$/);
   }
   await expect(page.locator('dialog, .cta, [data-quote], form')).toHaveCount(0);
   await expect(page.locator('body')).not.toContainText('Tell us about your building.');
@@ -312,7 +301,8 @@ test('mobile menu supports keyboard dismissal and real-route navigation', async 
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(toggle).toBeFocused();
   await toggle.click();
-  await expectNavigationRequest(page, '/services', () => navigation.getByRole('link', { name: 'Services', exact: true }).click());
+  await navigation.getByRole('button', { name: 'Services' }).click();
+  await expectNavigationRequest(page, '/services', () => navigation.getByRole('link', { name: 'View all services', exact: true }).click());
 });
 
 test('touch cards retain their readable overlay and navigate with a single tap', async ({ browser }) => {
@@ -324,7 +314,7 @@ test('touch cards retain their readable overlay and navigate with a single tap',
     const tile = page.locator('.service-tile').last();
     await tile.scrollIntoViewIfNeeded();
     expect((await tileAppearance(tile)).overlayOpacity).toBeCloseTo(0.22, 2);
-    await expectNavigationRequest(page, '/services/residential-exterior-cleaning', () => tile.tap());
+    await expectNavigationRequest(page, '/services/heritage-building-cleaning', () => tile.tap());
   } finally {
     await context.close();
   }
@@ -455,7 +445,7 @@ for (const width of [390, 1440]) {
     await assertContrast('.audience-links a', [255, 255, 255]);
     await assertContrast('.benefits p', [255, 255, 255]);
     await assertContrast('.steps p', [0, 0, 0]);
-    await assertContrast('.process .text-link', [0, 0, 0]);
+    await assertContrast('.process h2', [0, 0, 0]);
     await assertContrast('.footer-grid a:not(.brand)', [0, 0, 0]);
     await page.locator('.footer-grid a:not(.brand)').first().hover();
     await assertContrast('.footer-grid a:not(.brand)', [0, 0, 0]);
