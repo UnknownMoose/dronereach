@@ -57,8 +57,8 @@ for (const width of [390, 768, 1024, 1440]) {
     page.on('pageerror', error => pageErrors.push(error.message));
     await page.setViewportSize({ width, height: 1000 });
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Specialist exterior cleaning for hard-to-reach buildings.');
-    await expect(page.locator('.hero-photo img')).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Exterior Building Cleaning');
+    await expect(page.locator('.hero-background')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Specialist cleaning. From roofs to façades.' })).toBeVisible();
     await expect(page.locator('.service-tile')).toHaveCount(8);
 
@@ -159,12 +159,6 @@ for (const width of [390, 768, 1024, 1440]) {
     expect(audience.bottom).toBe(width < 600 ? 20 : 36);
     expect(audience.linkSizes).toEqual([17, 17, 17]);
 
-    const headlineWord = page.locator('.no-break');
-    expect(await headlineWord.evaluate(element => {
-      const range = document.createRange();
-      range.selectNodeContents(element);
-      return range.getClientRects().length;
-    })).toBe(1);
 
     await loadImages(page);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -379,7 +373,6 @@ test('brand colours and pale backgrounds use the exact navy and blue palette', a
       darkButton: colour('.button.navy', 'backgroundColor'),
       blueButton: colour('.button.cyan', 'backgroundColor'),
       blueButtonText: colour('.button.cyan', 'color'),
-      headlineAccent: colour('h1 > span', 'color'),
       benefitIcon: colour('.benefit-icon', 'color'),
       cardOverlay: colour('.service-tile', 'backgroundColor', '::before'),
       subtleBackground: colour('footer', 'backgroundColor'),
@@ -387,26 +380,27 @@ test('brand colours and pale backgrounds use the exact navy and blue palette', a
       reviewBackground: colour('.feedback', 'backgroundColor'),
     };
   });
+  expect(palette.heading).toEqual([255, 255, 255]);
   expect(palette.navyToken).toBe('#13294a');
   expect(palette.blueToken).toBe('#2b9fd6');
-  for (const name of ['heading', 'sectionHeading', 'darkButton', 'blueButtonText', 'cardOverlay']) expect(palette[name], name).toEqual([19, 41, 74]);
-  for (const name of ['blueButton', 'headlineAccent', 'benefitIcon']) expect(palette[name], name).toEqual([43, 159, 214]);
+  for (const name of ['sectionHeading', 'darkButton', 'blueButtonText', 'cardOverlay']) expect(palette[name], name).toEqual([19, 41, 74]);
+  for (const name of ['blueButton', 'benefitIcon']) expect(palette[name], name).toEqual([43, 159, 214]);
   // Expected rendered sRGB mixes of the brand blue with white at 10% and 18%.
   expect(palette.subtleBackground).toEqual([234, 245, 251]);
   expect(palette.processBackground).toEqual([217, 238, 248]);
   expect(palette.reviewBackground).toEqual([217, 238, 248]);
 });
 
-test('contour artwork stays decorative and clipped to the hero and process sections', async ({ page }) => {
+test('contour artwork stays decorative and clipped to the process section', async ({ page }) => {
   await page.goto('/');
   const contours = page.locator('.contour-art');
-  await expect(contours).toHaveCount(2);
+  await expect(contours).toHaveCount(1);
   for (const contour of await contours.all()) {
     await expect(contour).toHaveAttribute('aria-hidden', 'true');
     const decoration = await contour.evaluate(element => {
       const style = getComputedStyle(element);
       return {
-        intendedSection: element.parentElement.matches('.hero-band, .process'),
+        intendedSection: element.parentElement.matches('.process'),
         pointerEvents: style.pointerEvents,
         sectionOverflow: getComputedStyle(element.parentElement).overflow,
         mask: style.maskImage,

@@ -17,6 +17,12 @@ npm test
 
 The homepage uses normal page links. Vite runs in multi-page mode, so deliberately unfinished destinations return 404 rather than silently serving the homepage. No placeholder destination pages or enquiry backend have been added.
 
+## Launch video
+
+Set the single `videoSrc` value in `public/hero-config.json` to the actual footage URL, for example a locally hosted `/videos/drone-cleaning.webm`. Leave it empty until footage is available. The JSON file is fetched at runtime; changing the deployed configuration does not require rebuilding the hero layout. The current image stays underneath as poster/fallback. Playback is muted, looping and inline; the pause/play control appears only after successful playback. Reduced-motion users see the static image without a video request.
+
+Video tests generate a temporary WebM using FFmpeg; no test video is shipped in the website.
+
 ## Brand theme
 
 `src/theme.css` defines the exact navy `#13294A` and blue `#2B9FD6`. Subtle surfaces mix 10% blue with white; process/review surfaces mix 18%. Functional links mix blue with navy for contrast. All component colours and SVG brand fills use these tokens.
