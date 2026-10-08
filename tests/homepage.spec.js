@@ -398,7 +398,6 @@ test('shared palette uses only exact brand blue, pure black and white', async ({
       processBackground: colour('.process', 'backgroundColor'),
       processText: colour('.steps p', 'color'),
       reviewBackground: colour('.feedback', 'backgroundColor'),
-      contourColour: colour('.contour-art', 'backgroundColor'),
       blueSurfaces,
       unapproved,
     };
@@ -409,7 +408,6 @@ test('shared palette uses only exact brand blue, pure black and white', async ({
   expect(palette.heading).toEqual([255, 255, 255]);
   for (const name of ['sectionHeading', 'blueButtonText', 'cardOverlay', 'footerBackground', 'processBackground']) expect(palette[name], name).toEqual([0, 0, 0]);
   for (const name of ['blueButton', 'benefitIcon']) expect(palette[name], name).toEqual([0, 150, 214]);
-  expect(palette.contourColour).toEqual([0, 150, 214]);
   expect(palette.benefitIconBackground).toEqual([255, 255, 255]);
   for (const name of ['benefitBackground', 'reviewBackground']) expect(palette[name], name).toEqual([255, 255, 255]);
   for (const name of ['footerText', 'processText']) expect(palette[name], name).toEqual([255, 255, 255]);
@@ -473,28 +471,16 @@ for (const width of [390, 1440]) {
   });
 }
 
-test('contour artwork stays decorative and clipped to the process section', async ({ page }) => {
+test('process section has a solid black background with no topographic decoration', async ({ page }) => {
+  const artworkRequests = [];
+  page.on('request', request => { if (/contour|topograph/i.test(request.url())) artworkRequests.push(request.url()); });
   await page.goto('/');
-  const contours = page.locator('.contour-art');
-  await expect(contours).toHaveCount(1);
-  for (const contour of await contours.all()) {
-    await expect(contour).toHaveAttribute('aria-hidden', 'true');
-    const decoration = await contour.evaluate(element => {
-      const style = getComputedStyle(element);
-      return {
-        intendedSection: element.parentElement.matches('.process'),
-        pointerEvents: style.pointerEvents,
-        sectionOverflow: getComputedStyle(element.parentElement).overflow,
-        mask: style.maskImage,
-        repeat: style.maskRepeat,
-        interactiveDescendants: element.querySelectorAll('a, button, input, [tabindex]').length,
-      };
-    });
-    expect(decoration.intendedSection).toBe(true);
-    expect(decoration.pointerEvents).toBe('none');
-    expect(['hidden', 'clip']).toContain(decoration.sectionOverflow);
-    expect(decoration.mask).toContain('/patterns/contours.svg');
-    expect(decoration.repeat.split(',').every(value => value.trim() === 'no-repeat')).toBe(true);
-    expect(decoration.interactiveDescendants).toBe(0);
-  }
+  await expect(page.locator('.contour-art')).toHaveCount(0);
+  const appearance = await page.locator('.process').evaluate(element => {
+    const style = getComputedStyle(element);
+    return { background: style.backgroundColor, image: style.backgroundImage, before: getComputedStyle(element, '::before').content, after: getComputedStyle(element, '::after').content };
+  });
+  expect(appearance).toEqual({ background: 'rgb(0, 0, 0)', image: 'none', before: 'none', after: 'none' });
+  await expect(page.locator('.steps li')).toHaveCount(3);
+  expect(artworkRequests).toEqual([]);
 });

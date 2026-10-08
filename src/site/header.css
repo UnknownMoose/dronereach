@@ -1,0 +1,12 @@
+/* The same header content works over the hero and in normal flow on inner pages. */
+.header-shell { width:100%; color:var(--white); }
+.header-shell--hero { position:absolute; top:0; left:0; z-index:5; }
+.header-shell--solid { position:relative; background:var(--black); }
+.site-header .brand { color:var(--white); }
+.site-header nav a:focus-visible,.site-header .menu-toggle:focus-visible { outline-color:var(--white); }
+.site-header .menu-toggle { background:var(--black); color:var(--white); }
+.site-header .menu-toggle:hover,.site-header .menu-toggle:active { background:var(--brand-blue); color:var(--black); }
+.site-header nav a:not(.button):hover,.site-header nav a:not(.button):active { text-decoration:underline; }
+@media(max-width:899px) {
+  .site-header nav.open { background:var(--black); padding:12px 16px 20px; border-radius:8px; margin-bottom:12px; }
+}
