@@ -14,7 +14,7 @@ npm test
 npm run preview
 ```
 
-Tests use `/usr/bin/chromium`; adjust `playwright.config.js` for another machine. There is no separate lint script. Production output is in `dist`. The existing clean URLs have no trailing slash; Vite development and preview resolve the flat HTML entries. Configure the production host to resolve clean URLs to the corresponding `.html` file, without routing missing pages back to the homepage.
+Tests use `/usr/bin/chromium`; adjust `playwright.config.js` for another machine. There is no separate lint script. Production output is in `dist`. The existing clean URLs have no trailing slash; Vite development and preview resolve the flat HTML entries. `vercel.json` enables Vercel clean URLs and disables trailing slashes, resolving each route to its compiled `.html` file. Missing pages continue to return 404; there is no homepage fallback. Vite’s local extension lookup is not proof of a production host’s routing.
 
 ## Shared document and navigation
 
@@ -26,7 +26,7 @@ To add a normal page:
 
 1. Create a flat HTML entry, such as `about.html`, for a clean `/about` URL. Include a JSON `page` comment followed by page content; do not duplicate the document, header, main or footer.
 2. Set unique `title`, `description`, `path` and `headerVariant`. `solid` is a black header in normal flow; `hero` overlays the existing full-screen homepage hero. Optional `styles` contains local `/src/*.css` paths.
-3. Register the entry in `vite.config.js`, then add its genuine destination to the shared navigation configuration where appropriate.
+3. Register the entry in `src/site/pages.js`, then add its genuine destination to the shared navigation configuration where appropriate.
 4. Build and verify direct access, refresh, keyboard navigation and mobile layout.
 
 ```html
@@ -44,7 +44,7 @@ To add a normal page:
 </section>
 ```
 
-The layout plugin creates canonical links from the approved production origin and each page path. An optional `SITE_URL` environment variable can replace the origin for another verified production domain. The repository has no existing sitemap.
+The layout plugin creates canonical links from the approved production origin and each page path. An optional `SITE_URL` environment variable can replace the origin for another verified production domain. The shared route registry in `src/site/pages.js` drives both production HTML entries and the sitemap. The layout plugin serves `sitemap.xml` and `robots.txt` during development and emits them in `dist` for production, using the same production origin as canonical URLs.
 
 ## Service catalogue
 
@@ -73,8 +73,15 @@ Implemented routes:
 - `/services/shopfront-signage-cleaning`
 - `/services/heritage-building-cleaning`
 - `/contact`
+- `/drone-cleaning-safety-compliance`
 
 The quote page uses the approved email `contact@dronereach.co.uk`, with useful details to include. It contains no form or backend. No telephone number has been supplied. Add a verified number to `businessContact` when available; the quote page and footer will both use it. A future form can be added to the contact page's main content without changing the global layout.
+
+## Safety & Compliance
+
+`drone-cleaning-safety-compliance.html` uses the existing global layout, shared service FAQs and CTA styling. `src/site/trust.js` renders the same four operating-standard points on that page and beneath the homepage hero, inside the existing benefits band. `src/trust.css` and `src/safety.css` keep the layout open and white with brand-blue icons and accents. The shared header and footer both link to Safety & Compliance.
+
+The page uses the supplied present-tense copy. Before launch, verify authorisation, pilot qualifications/training, insurance and operating-process statements against the final documents using [the internal launch checklist](docs/launch-checklist.md). The checklist is not copied into public pages or production output. No official CAA logo, accreditation seal, policy limit, qualification name or fake document download is introduced.
 
 ## Launch video
 

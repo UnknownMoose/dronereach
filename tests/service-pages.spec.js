@@ -11,7 +11,7 @@ const catalogue = [
   ['Heritage building cleaning', '/services/heritage-building-cleaning'],
 ];
 const routes = [...catalogue, ['Specialist cleaning. From roofs to façades.', '/services'], ['Get a quote', '/contact']];
-const knownPaths = new Set(['/', ...routes.map(([, path]) => path)]);
+const knownPaths = new Set(['/', '/drone-cleaning-safety-compliance', ...routes.map(([, path]) => path)]);
 
 for (const width of [390, 768, 1440]) {
   for (const [title, path] of routes) {
