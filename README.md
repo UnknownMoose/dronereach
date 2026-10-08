@@ -41,7 +41,15 @@ To add a real page later:
 </section>
 ```
 
-No additional public page entries have been created. The solid-header fixture used by browser tests exists only in intercepted test responses.
+The homepage and façade service are the only public page entries. The generic solid-header fixture used by browser tests exists only in intercepted test responses.
+
+## Service pages
+
+`services/facade-cleaning.html` uses the global layout with `headerVariant: "solid"` and `styles: ["/src/service.css"]`. The flat HTML entry preserves the existing clean route `/services/facade-cleaning`; Vite serves it in development and preview. The homepage card already links there and is unchanged.
+
+For another service, copy the service-specific content structure, replace metadata/copy/images/links, and register its HTML entry in `vite.config.js`. Reuse `.service-page`, hero, benefits, introduction, process, sector cards, FAQ and quote classes. The page's optional `styles` array adds local CSS without loading service styles on the homepage. FAQs use native `details`/`summary`, initially closed, with built-in keyboard/expanded-state support and no extra script.
+
+All façade page photographs remain illustrative concept assets: `hero.webp`, `sector-0.webp`, `sector-1.webp`, and `service-roof.webp` for the traditional stone/slate heritage card. Replace them with approved DroneReach photography before launch. Quote buttons reuse `/contact`; `/services`, `/contact` and the three linked sector pages are still intentionally unfinished destinations.
 
 ## Launch video
 
@@ -69,10 +77,9 @@ Substantiate the supplied “Up to 5 times faster than conventional cleaning met
 
 ## Linked pages still to build
 
-Only `/` is implemented. The following links intentionally point to future pages:
+Only `/` and `/services/facade-cleaning` are implemented. The following links intentionally point to future pages:
 
 - `/services`
-- `/services/facade-cleaning`
 - `/services/cladding-cleaning`
 - `/services/roof-cleaning`
 - `/services/window-glass-cleaning`
@@ -83,6 +90,7 @@ Only `/` is implemented. The following links intentionally point to future pages
 - `/sectors`
 - `/sectors/commercial-buildings`
 - `/sectors/warehouses-industrial`
+- `/sectors/heritage-buildings`
 - `/case-studies`
 - `/case-studies/building-facade-cleaning`
 - `/about`

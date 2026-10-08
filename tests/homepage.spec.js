@@ -296,6 +296,7 @@ test('hover and keyboard focus brighten photos while titles and their bottom gra
   expect(focused.titleX).toBeCloseTo(initial.titleX, 1);
   expect(focused.titleY).toBeCloseTo(initial.titleY, 1);
   await expectNavigationRequest(page, '/services/facade-cleaning', () => page.keyboard.press('Enter'));
+  await expect(page.locator('h1')).toHaveText('Façade cleaning');
 });
 
 test('mobile menu supports keyboard dismissal and real-route navigation', async ({ page }) => {
