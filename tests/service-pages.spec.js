@@ -33,7 +33,7 @@ for (const width of [390, 768, 1440]) {
       await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', `https://dronereach.co.uk${path}`);
       expect((await page.title()).length).toBeGreaterThan(15);
       expect((await page.locator('meta[name="description"]').getAttribute('content')).length).toBeGreaterThan(60);
-      await expect(page.locator('form,input,textarea,select,.contour-art')).toHaveCount(0);
+      if (path !== '/contact') await expect(page.locator('form,input,textarea,select,.contour-art')).toHaveCount(0);
       await expect(page.locator('body')).not.toContainText(/form coming soon|phone and email to be added|gutter cleaning|residential cleaning/i);
       const serviceLinks = page.locator('#services-menu a').all();
       expect((await serviceLinks).length).toBe(9);
@@ -73,9 +73,9 @@ for (const width of [390, 768, 1440]) {
         await expect(page.locator('main a.service-tile')).toHaveCount(8);
         await expect(page.locator('.overview-service p')).toHaveCount(8);
       } else {
-        await expect(page.locator('.page-intro>p:not(.eyebrow)')).toHaveText('Tell us about your building and what needs cleaning. We’ll review the details and get back to you to discuss the next step.');
+        await expect(page.locator('.page-intro-copy>p:not(.eyebrow)')).toHaveText('Tell us about your building and what needs cleaning. We’ll review the details and get back to you to discuss the next step.');
         await expect(page.locator('.quote-checklist li')).toHaveText(['Building location or postcode', 'Type of building and surfaces', 'Approximate size or height', 'Photos of the areas needing cleaning', 'Preferred timescale']);
-        await expect(page.locator('main a[href="mailto:contact@dronereach.co.uk"]')).toBeVisible();
+        await expect(page.locator('main a[href="mailto:contact@dronereach.co.uk"]').first()).toBeVisible();
         await expect(page.locator('a[href^="tel:"]')).toHaveCount(0);
       }
       const clipping = await page.locator('main h1,main h2,main h3,main p,main li').evaluateAll(elements => elements.filter(el => !el.matches('.steps li') && el.scrollWidth > el.clientWidth + 1).map(el => el.textContent));

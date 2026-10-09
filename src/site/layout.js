@@ -14,7 +14,7 @@ export function renderPage({ title, description, headerVariant = 'solid', styles
   const pageStyles = styles.map(path => `<link rel="stylesheet" href="${escapeHtml(path)}">`).join('');
   return `<!doctype html>
 <html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escapeHtml(description)}"><meta name="theme-color" content="#000000"><title>${escapeHtml(title)}</title><link rel="stylesheet" href="/src/theme.css"><link rel="stylesheet" href="/src/style.css"><link rel="stylesheet" href="/src/refinement.css"><link rel="stylesheet" href="/src/site/header.css"><link rel="stylesheet" href="/src/hero.css">${pageStyles}${canonicalLink}</head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="${escapeHtml(description)}"><meta name="theme-color" content="#000000"><title>${escapeHtml(title)}</title><link rel="stylesheet" href="/src/app.css">${pageStyles}${canonicalLink}</head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 ${renderHeader(headerVariant)}

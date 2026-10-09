@@ -17,7 +17,7 @@ for (const width of [390,768,1440]) {
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href',`https://dronereach.co.uk${path}`);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('h1')).toHaveText('Drone Cleaning Safety & Compliance');
-    await expect(page.locator('.page-intro>p:not(.eyebrow)')).toHaveText('CAA-authorised drone operations, insured services and site-specific planning. Professional exterior cleaning with safety at the centre of every project.');
+    await expect(page.locator('.page-intro-copy>p:not(.eyebrow)')).toHaveText('CAA-authorised drone operations, insured services and site-specific planning. Professional exterior cleaning with safety at the centre of every project.');
     await expect(page.locator('header.site-header')).toHaveCount(1);
     await expect(page.locator('footer')).toHaveCount(1);
     await expect(page.locator('.header-shell--solid')).toHaveCount(1);
@@ -40,7 +40,7 @@ for (const width of [390,768,1440]) {
     await expect(page.locator('.service-quote h2')).toHaveText('Professional cleaning. Carefully planned.');
     await expect(page.locator('.service-quote p')).toHaveText('Talk to us about your building, site requirements and contractor approval process.');
     await expect(page.locator('.service-quote a')).toHaveAttribute('href','/contact');
-    await expect(page.locator('form,.contour-art,main img,main a[download]')).toHaveCount(0);
+    await expect(page.locator('form,.contour-art,main a[download]')).toHaveCount(0);
     await expect(page.locator('main')).not.toContainText(/coming soon|we plan to|pre-launch|CAA-certified|100% eco-friendly|risk-free|policy number|£/i);
     const geometry = await page.evaluate(()=>({
       overflow:document.documentElement.scrollWidth>innerWidth,

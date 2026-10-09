@@ -33,7 +33,7 @@ export function pageLayoutPlugin() {
         if (metadata.service) {
           const service = services.find(item => item.slug === metadata.service);
           if (!service) throw new Error(`Unknown service: ${metadata.service}`);
-          metadata = { title: service.seoTitle, description: service.meta, headerVariant: 'solid', styles: ['/src/service.css'], path: service.href };
+          metadata = { title: service.seoTitle, description: service.meta, headerVariant: 'solid', path: service.href };
           content = renderService(service);
         }
         content = content.replace('<!-- service-cards -->', renderServiceCards())

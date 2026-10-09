@@ -15,4 +15,4 @@ Before launch, check every homepage trust statement and the Safety & Compliance 
 
 The public copy uses the supplied present-tense wording. This internal checklist does not establish that the underlying permissions, qualifications, insurance or records are in place.
 
-Also substantiate the supplied homepage speed claim, replace illustrative concept imagery with approved DroneReach assets, and hide the customer-review placeholder for launch until an approved review is available.
+Also substantiate the supplied homepage speed claim, replace illustrative concept imagery with approved DroneReach assets, and connect the quote form before enabling submissions. The customer-review placeholder has been removed; genuine Google reviews can be integrated separately.

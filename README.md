@@ -14,13 +14,13 @@ npm test
 npm run preview
 ```
 
-Tests use `/usr/bin/chromium`; adjust `playwright.config.js` for another machine. There is no separate lint script. Production output is in `dist`. The existing clean URLs have no trailing slash; Vite development and preview resolve the flat HTML entries. `vercel.json` enables Vercel clean URLs and disables trailing slashes, resolving each route to its compiled `.html` file. Missing pages continue to return 404; there is no homepage fallback. Vite’s local extension lookup is not proof of a production host’s routing.
+Run `npx playwright install chromium` before the first test run. Set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to use an existing Chromium installation. There is no separate lint script. Production output is in `dist`. The existing clean URLs have no trailing slash; Vite development and preview resolve the flat HTML entries. `vercel.json` enables Vercel clean URLs and disables trailing slashes, resolving each route to its compiled `.html` file. Missing pages continue to return 404; there is no homepage fallback. Vite’s local extension lookup is not proof of a production host’s routing.
 
 ## Shared document and navigation
 
 `src/site/layout.js` renders the document, metadata, skip link, global header, main content and global footer. `header.js`, `footer.js` and `brand.js` remain the single source of shared markup. `config.js` defines navigation, the verified production origin `https://dronereach.co.uk`, and approved business contact details. `src/site/navigation.js` manages the click-operated Services disclosure and mobile menu, including keyboard focus, expanded states, Escape, outside-click dismissal and responsive reset.
 
-Only genuine page destinations are published in navigation. Sectors, About, project details, legal pages and a separate process page do not exist, so they are not linked. Homepage commercial/industrial category labels and service-page building types without destinations are non-interactive; heritage links to its service page. The illustrative project showcase and labelled review placeholder remain intact.
+Only genuine page destinations are published in navigation. Sectors, About, project details, legal pages and a separate process page do not exist, so they are not linked. Homepage commercial/industrial category labels and service-page building types without destinations are non-interactive; heritage links to its service page. The illustrative project showcase remains. The customer-review placeholder has been removed; Google reviews will be integrated separately.
 
 To add a normal page:
 
@@ -75,7 +75,7 @@ Implemented routes:
 - `/contact`
 - `/drone-cleaning-safety-compliance`
 
-The quote page uses the approved email `contact@dronereach.co.uk`, with useful details to include. It contains no form or backend. No telephone number has been supplied. Add a verified number to `businessContact` when available; the quote page and footer will both use it. A future form can be added to the contact page's main content without changing the global layout.
+The quote page uses the approved email `contact@dronereach.co.uk`, with useful details to include. It includes the six-field quote form UI, with submission disabled until a backend is connected. No telephone number has been supplied. Add a verified number to `businessContact` when available; the quote page and footer will both use it. Connect submission in the future without changing the global layout.
 
 ## Safety & Compliance
 
@@ -104,4 +104,12 @@ All current photographs are temporary AI-generated architectural concept imagery
 
 Replace these with approved business photography and supply launch footage when available. The existing solar and render images are material-detail concepts, not evidence of commercial projects. `sector-2.webp` and `service-residential.webp` are legacy assets no longer used by the pages.
 
-Set `VITE_SHOW_REVIEW_PLACEHOLDER=false` for a launch build until a genuine approved review is available. Substantiate the supplied homepage claim “Up to 5 times faster than conventional cleaning methods on suitable jobs” before launch. No additional performance claims, credentials, prices or testimonials have been introduced.
+Substantiate the supplied homepage claim “Up to 5 times faster than conventional cleaning methods on suitable jobs” before launch. No additional performance claims, credentials, prices or testimonials have been introduced.
+
+## Shared design system (October 2026)
+
+Every page loads `src/app.css` through the global layout. `theme.css` owns colour, type-size and spacing tokens; `typography.css` owns the shared heading, body, lead, caption, card and label roles. The homepage hero deliberately retains its larger display heading. Component styles own layout and states. `base.css` replaces the old `style.css` + `refinement.css` layering. Do not add page-specific font-size overrides for shared roles.
+
+Contact and Safety use the same `.page-intro--visual` image/text layout with brand-blue accents and existing illustrative assets. All pages retain the global header and footer. The contact form includes the requested six fields, but is a UI preview only: submission is disabled, with no network calls, storage or success state. Email remains available.
+
+The old review markup, styles, environment switch and footer review disclaimer have been removed. Add a genuine Google reviews integration separately when ready.

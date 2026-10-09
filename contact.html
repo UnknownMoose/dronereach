@@ -3,12 +3,23 @@
   "title": "Get a Building Cleaning Quote | DroneReach",
   "description": "Discuss exterior building cleaning with DroneReach. Share your building’s location, surfaces, size, photos and preferred timescale to help us assess the next step.",
   "headerVariant": "solid",
-  "path": "/contact",
-  "styles": ["/src/service.css", "/src/pages.css"]
+  "path": "/contact"
 }
 -->
 <article class="service-page contact-page container">
-<header class="page-intro"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li aria-current="page">Get a quote</li></ol></nav><p class="eyebrow">Let’s discuss your building</p><h1>Get a quote</h1><p>Tell us about your building and what needs cleaning. We’ll review the details and get back to you to discuss the next step.</p><div class="contact-methods"><!-- contact-details --></div></header>
+<header class="page-intro page-intro--visual"><nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li aria-current="page">Get a quote</li></ol></nav><div class="page-intro-copy"><p class="eyebrow">Let’s discuss your building</p><h1>Get a quote</h1><p>Tell us about your building and what needs cleaning. We’ll review the details and get back to you to discuss the next step.</p><div class="contact-methods"><!-- contact-details --></div></div><figure class="page-intro-media"><img src="/images/sector-0.webp" alt="Illustrative commercial building façade" width="900" height="780" loading="lazy"><figcaption>Illustrative concept imagery.</figcaption></figure></header>
 <section class="contact-details" aria-labelledby="details-heading"><div><h2 id="details-heading">Useful details to include</h2><p>A few photographs and some information about the site help us understand the work and plan an initial assessment.</p></div><ul class="quote-checklist"><li>Building location or postcode</li><li>Type of building and surfaces</li><li>Approximate size or height</li><li>Photos of the areas needing cleaning</li><li>Preferred timescale</li></ul></section>
+<form class="quote-form" aria-labelledby="form-heading" onsubmit="return false">
+<h2 id="form-heading">Tell us about your project</h2>
+<div class="form-fields">
+<div class="form-field"><label for="quote-name">Name</label><input id="quote-name" name="name" autocomplete="name"></div>
+<div class="form-field"><label for="quote-company">Company</label><input id="quote-company" name="company" autocomplete="organization"></div>
+<div class="form-field"><label for="quote-email">Email</label><input id="quote-email" name="email" type="email" autocomplete="email"></div>
+<div class="form-field"><label for="quote-phone">Phone</label><input id="quote-phone" name="phone" type="tel" autocomplete="tel"></div>
+<div class="form-field form-field--wide"><label for="quote-address">Building / site address</label><input id="quote-address" name="address" autocomplete="street-address"></div>
+<div class="form-field form-field--wide"><label for="quote-details">Project details</label><p id="details-help">Help us out by sharing the details we need to put together your quote.</p><textarea id="quote-details" name="details" aria-describedby="details-help"></textarea></div>
+</div><button class="button primary" type="submit" disabled aria-describedby="form-status">Request a quote <span aria-hidden="true">→</span></button>
+<p class="form-status" id="form-status">Online enquiries are not available yet. Please email <a href="mailto:contact@dronereach.co.uk">contact@dronereach.co.uk</a>.</p>
+</form>
 <div class="contact-more"><p>Explore the cleaning options for your building.</p><a class="text-link" href="/services">View all services <span aria-hidden="true">→</span></a></div>
 </article>

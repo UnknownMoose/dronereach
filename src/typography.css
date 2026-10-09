@@ -1,0 +1,20 @@
+/* Single source of truth for shared type roles. Homepage hero retains its display size. */
+body { font-size: var(--text-body); line-height: var(--body-leading); }
+h1, .page-intro h1, .service-page .service-hero h1 { font-size: var(--text-title); line-height: 1.08; }
+h2, .audience h2, .safety-topic h2 { font-size: var(--text-heading); line-height: 1.15; }
+h3, .benefits h2, .service-page .steps h3 { font-size: var(--text-subheading); line-height: 1.25; }
+p, .service-page p, .benefits p, .steps p, .service-page .steps p,
+.project-copy > p:not(.eyebrow), .overview-service p,
+.service-page .service-faq details p { font-size: var(--text-body); line-height: var(--body-leading); }
+.page-intro > p:not(.eyebrow), .page-intro-copy > p:not(.eyebrow),
+.service-page .service-description, .hero-band .intro { font-size: var(--text-lead); line-height: 1.55; }
+.eyebrow, .project-copy .eyebrow { font-size: var(--text-label); line-height: 1.4; }
+.asset-note, .service-page .service-support, .service-page figcaption,
+.service-page .service-image-note, .hero-caption { font-size: var(--text-small); line-height: 1.5; }
+.service-tile h3, .service-page .service-sectors .service-tile h3 { font-size: var(--text-card); line-height: 1.15; }
+.service-faq summary, .quote-checklist li, .safety-checklist li,
+.service-materials li { font-size: var(--text-body); line-height: 1.5; }
+footer p, .footer-grid p, .footer-grid a:not(.brand), .footer-bottom p,
+.footer-bottom a, .footer-grid h3 { font-size: var(--text-small); line-height: 1.6; }
+.site-header nav { font-size: 16px; }
+.section, .service-page .service-section, .process { padding-block: var(--section-space); }

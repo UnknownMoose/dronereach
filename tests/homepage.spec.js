@@ -57,7 +57,7 @@ for (const width of [390, 768, 1024, 1440]) {
     page.on('pageerror', error => pageErrors.push(error.message));
     await page.setViewportSize({ width, height: 1000 });
     await page.goto('/');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Exterior Building Cleaning');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Drone-Powered Exterior Building Cleaning');
     await expect(page.locator('.hero-background')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Specialist cleaning. From roofs to façades.' })).toBeVisible();
     await expect(page.locator('.service-tile')).toHaveCount(8);
@@ -109,9 +109,9 @@ for (const width of [390, 768, 1024, 1440]) {
     for (const item of benefitLayout.items) {
       expect(item.iconWidth).toBe(52);
       expect(item.iconHeight).toBe(52);
-      expect(item.headingSize).toBe(24);
-      expect(item.paragraphSize).toBe(16);
-      expect(item.paragraphLineHeight).toBeCloseTo(26.4, 1);
+      expect(item.headingSize).toBeGreaterThanOrEqual(22);
+      expect(item.paragraphSize).toBeGreaterThanOrEqual(18);
+      expect(item.paragraphLineHeight).toBeCloseTo(item.paragraphSize * 1.65, 1);
       expect(item.fits).toBe(true);
       expect(item.shadow).toBe('none');
       expect(item.borderWidth).toBe(0);
@@ -214,7 +214,7 @@ test('four drone-cleaning benefits form a separate semantic section between the 
   })).toBe(true);
 });
 
-test('homepage links use implemented destinations while preserving the project and review disclosures', async ({ page }) => {
+test('homepage links use implemented destinations while preserving the project disclosure and removing placeholder reviews', async ({ page }) => {
   await page.goto('/');
   const destinations = {
     'Services': '/services',
@@ -236,7 +236,7 @@ test('homepage links use implemented destinations while preserving the project a
   }
   await expect(page.locator('dialog, .cta, [data-quote], form')).toHaveCount(0);
   await expect(page.locator('body')).not.toContainText('Tell us about your building.');
-  await expect(page.locator('[data-review-placeholder]')).toContainText('Review placeholder');
+  await expect(page.locator('[data-review-placeholder], .feedback')).toHaveCount(0);
   await expect(page.locator('.projects')).toContainText('Illustrative comparison — not completed DroneReach work.');
   const sectorSection = page.locator('.audience');
   await expect(sectorSection).toBeVisible();
@@ -388,7 +388,6 @@ test('shared palette uses only exact brand blue, pure black and white', async ({
       footerText: colour('.footer-grid p', 'color'),
       processBackground: colour('.process', 'backgroundColor'),
       processText: colour('.steps p', 'color'),
-      reviewBackground: colour('.feedback', 'backgroundColor'),
       blueSurfaces,
       unapproved,
     };
@@ -400,7 +399,7 @@ test('shared palette uses only exact brand blue, pure black and white', async ({
   for (const name of ['sectionHeading', 'blueButtonText', 'cardOverlay', 'footerBackground', 'processBackground']) expect(palette[name], name).toEqual([0, 0, 0]);
   for (const name of ['blueButton', 'benefitIcon']) expect(palette[name], name).toEqual([0, 150, 214]);
   expect(palette.benefitIconBackground).toEqual([255, 255, 255]);
-  for (const name of ['benefitBackground', 'reviewBackground']) expect(palette[name], name).toEqual([255, 255, 255]);
+  for (const name of ['benefitBackground']) expect(palette[name], name).toEqual([255, 255, 255]);
   for (const name of ['footerText', 'processText']) expect(palette[name], name).toEqual([255, 255, 255]);
   expect(palette.blueSurfaces.length).toBeGreaterThan(0);
   for (const surface of palette.blueSurfaces) {

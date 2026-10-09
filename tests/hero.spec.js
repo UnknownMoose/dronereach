@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const description = 'Drone-powered cleaning for commercial, industrial and heritage buildings — reducing work at height, saving time and minimising disruption.';
+const description = 'Specialist cleaning for commercial, industrial and heritage buildings — reducing work at height, saving time and minimising disruption.';
 let fixtureDirectory, fixture;
 test.beforeAll(() => {
   fixtureDirectory = mkdtempSync(join(tmpdir(), 'dronereach-video-'));
@@ -21,7 +21,7 @@ for (const [width,height] of [[390,844],[768,1024],[1440,900],[844,390]]) {
   test(`hero fits the first screen and grows safely at ${width}x${height}`, async ({page}) => {
     await page.setViewportSize({width,height});
     await page.goto('/');
-    await expect(page.getByRole('heading',{level:1})).toHaveText('Exterior Building Cleaning');
+    await expect(page.getByRole('heading',{level:1})).toHaveText('Drone-Powered Exterior Building Cleaning');
     await expect(page.locator('.hero-band .intro')).toHaveText(description);
     await expect(page.locator('.hero-background')).toBeVisible();
     await expect.poll(()=>page.locator('.hero-background').evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
